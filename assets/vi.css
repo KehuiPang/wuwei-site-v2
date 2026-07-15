@@ -1,0 +1,128 @@
+/* ============================================================
+   无为 Wuwei · 官网落地页 VI 设计系统（共享样式）
+   纲领：玄墨黑 #16191E / 月白 #F4F6F8 / 靛青 #274A63 / 竹青 #5C8A73
+        一点朱 #C05F3C —— 只给"那一个"主 CTA，全站朱色面积 ≤10%
+   红线：大留白、有呼吸感；禁花哨渐变/重阴影；返璞归真、不叫卖。
+   ============================================================ */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --ink:      #16191E;   /* 玄墨黑 · 主背景 */
+  --ink-soft: #1A1F26;   /* 稍亮面板 */
+  --paper:    #F4F6F8;   /* 月白 · 主文字 */
+  --indigo:   #274A63;   /* 靛青 · 冷点缀/边框 */
+  --bamboo:   #5C8A73;   /* 竹青 · 正向/对号 */
+  --cinnabar: #C05F3C;   /* 一点朱 · 唯一主 CTA，克制使用 */
+  --mist:     #B7C0C7;   /* 次要文字 */
+  --mist-dim: #8B949D;   /* 更弱文字 */
+  --steel:    #6F9FAD;   /* eyebrow/小标 */
+  --line:     #242B34;   /* 分隔线 */
+  --maxw:     1080px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  background: var(--ink);
+  color: var(--paper);
+  font-family: "Noto Sans CJK SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+a { color: inherit; text-decoration: none; }
+img { max-width: 100%; display: block; }
+
+/* ---- 布局：大留白容器 ---- */
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 clamp(20px, 5vw, 56px); }
+section { padding: clamp(56px, 9vw, 112px) 0; }
+section + section { border-top: 1px solid var(--line); }
+
+/* ---- 顶部导航（极简） ---- */
+.nav { position: sticky; top: 0; z-index: 10; background: rgba(22,25,30,.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--line); }
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 64px; }
+.brand { display: flex; align-items: center; gap: 10px; font-weight: 600; letter-spacing: 2px; }
+.brand .mark { width: 26px; height: 26px; }
+.nav-right { display: flex; align-items: center; gap: 22px; }
+.lang-switch { font-size: 13px; color: var(--mist-dim); letter-spacing: 1px; }
+.lang-switch a.on { color: var(--paper); }
+.lang-switch a:hover { color: var(--paper); }
+
+/* ---- 文字层级 ---- */
+.eyebrow { color: var(--steel); font-size: 13px; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 18px; }
+h1, .h1 { font-size: clamp(30px, 5.4vw, 52px); font-weight: 700; letter-spacing: 1px; line-height: 1.25; }
+h2, .h2 { font-size: clamp(24px, 4vw, 38px); font-weight: 600; letter-spacing: 1px; line-height: 1.3; margin-bottom: 24px; }
+h3 { font-size: clamp(18px, 2.4vw, 22px); font-weight: 600; margin-bottom: 10px; }
+.lead { font-size: clamp(17px, 2.2vw, 21px); color: var(--mist); max-width: 40em; margin-top: 22px; }
+p { color: var(--mist); max-width: 44em; }
+p + p { margin-top: 16px; }
+.prose ul { list-style: none; margin-top: 20px; }
+.prose li { position: relative; padding-left: 26px; margin-bottom: 14px; color: var(--paper); }
+.prose li::before { content: ""; position: absolute; left: 0; top: .62em; width: 8px; height: 8px; border-radius: 50%; background: var(--bamboo); }
+
+/* ---- 按钮 ---- */
+.btn { display: inline-block; padding: 15px 30px; border-radius: 10px; font-weight: 600; letter-spacing: .5px; transition: transform .15s ease, background .2s ease; }
+.btn:active { transform: translateY(1px); }
+/* 唯一主 CTA —— 一点朱，全站克制到一个 */
+.cta { background: var(--cinnabar); color: #fff; }
+.cta:hover { background: #cf6a45; }
+/* 次要动作 —— 描边，绝不用朱色 */
+.btn-ghost { border: 1px solid var(--indigo); color: var(--paper); }
+.btn-ghost:hover { border-color: var(--steel); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 40px; align-items: center; }
+.cta-note { font-size: 14px; color: var(--mist-dim); }
+
+/* ---- Hero ---- */
+.hero { padding-top: clamp(64px, 11vw, 128px); }
+.hero h1 { max-width: 16em; }
+
+/* ---- 事实区 / 引用卡片（信任对比页用） ---- */
+.facts { display: grid; gap: 18px; margin-top: 28px; }
+.fact { background: var(--ink-soft); border: 1px solid var(--line); border-left: 3px solid var(--indigo); border-radius: 12px; padding: 22px 24px; }
+.fact p { color: var(--paper); max-width: none; }
+.source-link { display: inline-block; margin-top: 10px; font-size: 14px; color: var(--steel); border-bottom: 1px solid transparent; }
+.source-link:hover { border-color: var(--steel); }
+
+/* ---- 对比表 ---- */
+.cmp { width: 100%; border-collapse: collapse; margin-top: 28px; font-size: 15px; }
+.cmp th, .cmp td { padding: 15px 16px; text-align: left; border-bottom: 1px solid var(--line); }
+.cmp thead th { color: var(--mist-dim); font-weight: 500; letter-spacing: 1px; font-size: 13px; text-transform: uppercase; }
+.cmp .col-us { color: var(--paper); font-weight: 600; }
+.cmp tbody tr:hover { background: rgba(255,255,255,.02); }
+.yes { color: var(--bamboo); font-weight: 600; }
+.no  { color: var(--mist-dim); }
+
+/* ---- 立场/引言块 ---- */
+.stance { border-left: 3px solid var(--cinnabar); padding: 6px 0 6px 26px; margin-top: 10px; }
+.stance p { color: var(--paper); font-size: clamp(18px, 2.4vw, 22px); }
+
+/* ---- 产品首页：manifesto 开场（旧世界 vs 新世界，克制不叫卖） ---- */
+.manifesto { margin-top: 8px; border-left: 2px solid var(--line); padding-left: 24px; }
+.manifesto p { color: var(--mist-dim); font-size: clamp(16px, 2.2vw, 19px); line-height: 1.9; max-width: 42em; }
+.manifesto p + p { margin-top: 10px; }
+.manifesto p.turn { color: var(--paper); }
+
+/* ---- 产品首页：卖点网格（大留白、无花哨） ---- */
+.feature-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; margin-top: 28px; }
+.feature { background: var(--ink-soft); border: 1px solid var(--line); border-radius: 14px; padding: 26px 24px; }
+.feature .n { color: var(--steel); font-size: 13px; letter-spacing: 2px; }
+.feature h3 { margin-top: 10px; margin-bottom: 8px; }
+.feature p { color: var(--mist); max-width: none; }
+@media (max-width: 720px) { .feature-grid { grid-template-columns: 1fr; } }
+
+/* ---- 生态钩子内链条 ---- */
+.eco { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 24px; }
+.eco a { font-size: 14px; color: var(--steel); border: 1px solid var(--line); border-radius: 999px; padding: 8px 16px; }
+.eco a:hover { border-color: var(--steel); }
+
+/* ---- 页脚 ---- */
+.foot { border-top: 1px solid var(--line); padding: 40px 0; color: var(--mist-dim); font-size: 14px; }
+.foot .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 16px; }
+
+/* ---- 文案占位标记（上线前应清空/替换；仅编辑期可见提示） ---- */
+[data-fill] { outline: 1px dashed rgba(111,159,173,.35); outline-offset: 4px; }
+
+@media (max-width: 640px) {
+  .nav-right { gap: 14px; }
+  .cmp { font-size: 13px; }
+  .cmp th, .cmp td { padding: 11px 10px; }
+}

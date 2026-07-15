@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- 首页 -->
+  <url><loc>https://wuweiai.io/</loc></url>
+
+  <!-- 本周 5 个落地页 -->
+  <url>
+    <loc>https://wuweiai.io/wuwei-vs-claude-code</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/wuwei-vs-claude-code"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/wuwei-vs-claude-code"/>
+  </url>
+  <url>
+    <loc>https://wuweiai.io/en/wuwei-vs-claude-code</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/wuwei-vs-claude-code"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/wuwei-vs-claude-code"/>
+  </url>
+  <url><loc>https://wuweiai.io/claude-code-account-banned</loc></url>
+  <url>
+    <loc>https://wuweiai.io/claude-code-free-alternative</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/claude-code-free-alternative"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/claude-code-alternative"/>
+  </url>
+  <url>
+    <loc>https://wuweiai.io/claude-code-alternative</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/claude-code-alternative"/>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/claude-code-free-alternative"/>
+  </url>
+  <url><loc>https://wuweiai.io/wispr-flow-free-alternative</loc></url>
+
+  <!-- 产品首页：无为截 / 无为念（中英分流） -->
+  <url>
+    <loc>https://wuweiai.io/wuwei-shot</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/wuwei-shot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/wuwei-shot"/>
+  </url>
+  <url>
+    <loc>https://wuweiai.io/en/wuwei-shot</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/wuwei-shot"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/wuwei-shot"/>
+  </url>
+  <url>
+    <loc>https://wuweiai.io/voice</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/voice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/voice"/>
+  </url>
+  <url>
+    <loc>https://wuweiai.io/en/voice</loc>
+    <xhtml:link rel="alternate" hreflang="zh-CN" href="https://wuweiai.io/voice"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://wuweiai.io/en/voice"/>
+  </url>
+</urlset>
