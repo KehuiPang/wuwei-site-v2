@@ -3,6 +3,7 @@ import "./landing.css";
 import { getPricing, getLatestReleases, type Plan, type Release } from "@/lib/data";
 import { Track } from "@/components/Track";
 import { Reveal } from "@/components/Reveal";
+import { HeroDemo } from "@/components/HeroDemo";
 import { LandLangSwitch } from "@/components/LandLangSwitch";
 
 export const revalidate = 60; // ISR：改价/发版后 60s 内自动生效
@@ -139,6 +140,16 @@ export default async function Home() {
           <a className="btn btn-g" href="#how">看它如何工作</a>
         </div>
         <div className="plat">{hasRelease ? "免费开始 · 国内直连" : "免费开始 · 安装包即将上线"}　|　macOS · Windows · Linux</div>
+        <HeroDemo
+          title="无为 · 一句话，活自己干完"
+          lines={[
+            { role: "you", text: "你 ▸ 把这份 sales.xlsx 清洗好，导出 CSV 再画张趋势图" },
+            { role: "wu", text: "无为 ▸ 读取 sales.xlsx · 2,317 行" },
+            { role: "wu", text: "　　　 清洗缺失值、统一日期格式 ✓" },
+            { role: "wu", text: "　　　 导出 clean.csv ✓　生成 trend.png ✓" },
+            { role: "ok", text: "✓ 全部搞定，文件已放到你桌面。" },
+          ]}
+        />
         <div className="trust">
           <div className="tt">想用哪个大模型，都行 · 也可以什么都不用配</div>
           <div className="logos">

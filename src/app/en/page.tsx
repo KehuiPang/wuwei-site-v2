@@ -3,6 +3,7 @@ import "../landing.css";
 import { getPricing, getLatestReleases, type Plan } from "@/lib/data";
 import { Track } from "@/components/Track";
 import { Reveal } from "@/components/Reveal";
+import { HeroDemo } from "@/components/HeroDemo";
 import { LandLangSwitch } from "@/components/LandLangSwitch";
 
 export const revalidate = 60; // ISR：改价/发版后 60s 内自动生效
@@ -144,6 +145,16 @@ export default async function EnHome() {
           <a className="btn btn-g" href="#how">See how it works</a>
         </div>
         <div className="plat">{hasRelease ? "Free to start" : "Free to start · installers coming soon"} &nbsp;|&nbsp; macOS · Windows · Linux</div>
+        <HeroDemo
+          title="Wuwei · one sentence, work done"
+          lines={[
+            { role: "you", text: "You ▸ Clean up sales.xlsx, export a CSV and plot a trend" },
+            { role: "wu", text: "Wuwei ▸ read sales.xlsx · 2,317 rows" },
+            { role: "wu", text: "　　　 fixed missing values, unified dates ✓" },
+            { role: "wu", text: "　　　 exported clean.csv ✓　made trend.png ✓" },
+            { role: "ok", text: "✓ All done — files are on your desktop." },
+          ]}
+        />
         <div className="trust">
           <div className="tt">Use any model you like · or configure nothing at all</div>
           <div className="logos">
