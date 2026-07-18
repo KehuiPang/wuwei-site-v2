@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
 import "./landing.css";
 import { getPricing, getLatestReleases, type Plan, type Release } from "@/lib/data";
+import { FALLBACK_PLANS_CN } from "@/lib/fallback-pricing";
 import { Track } from "@/components/Track";
 import { Reveal } from "@/components/Reveal";
 import { HeroDemo } from "@/components/HeroDemo";
 import { LandLangSwitch } from "@/components/LandLangSwitch";
 
-export const revalidate = 60; // ISR：改价/发版后 60s 内自动生效
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "无为 WUWEI · 一念既出，万事自成 | 人人可用的 AI 提效客户端",
-  description:
-    "无为（WUWEI）——人人可用的 AI 提效客户端。你只管起念，把执行交给无为：真读写文件、精确编辑、跑命令、联网搜索，带权限确认。自带你的 key，接 Claude / OpenAI / 本地与国产大模型一键切换。免费开始，开箱即用。Mac / Windows / Linux。",
+  description: "无为（WUWEI）——人人可用的 AI 提效客户端。你只管起念，把执行交给无为：真读写文件、精确编辑、跑命令、联网搜索，带权限确认。自带你的 key，接 Claude / OpenAI / 本地与国产大模型一键切换。免费开始，开箱即用。Mac / Windows / Linux。",
   alternates: {
     canonical: "https://wuweiai.io",
     languages: {
@@ -22,7 +22,6 @@ export const metadata: Metadata = {
   },
 };
 
-// 圆相 · 一点朱火种（品牌主标）——描边=月白(paper token)，缺口一点朱=spark token
 function WuMark({ className, stroke = 12, dot = 10 }: { className?: string; stroke?: number; dot?: number }) {
   return (
     <svg viewBox="0 0 240 240" className={className} aria-label="无为">
@@ -35,19 +34,14 @@ function WuMark({ className, stroke = 12, dot = 10 }: { className?: string; stro
   );
 }
 
-// 定价卡文案（结构/文案照 legacy，数字与功能点走 Supabase 动态数据）
 const PLAN_COPY: Record<string, { pd: string; note: string }> = {
   free: { pd: "开箱即用，体验无为的全部核心能力", note: "无需注册，下载即用" },
   pro: { pd: "托管额度 + 增强能力，省去自配 key 的麻烦", note: "随时可升级 / 取消" },
   annual: { pd: "按年付更划算，长期用无为的省心之选", note: "付 10 月送 2 月" },
 };
 
-function symbolOf(currency: string) {
-  return currency === "USD" ? "$" : currency === "CNY" ? "¥" : "";
-}
-function periodOf(period: string) {
-  return period === "year" ? " / 年" : period === "month" ? " / 月" : "";
-}
+function symbolOf(currency: string) { return currency === "USD" ? "$" : currency === "CNY" ? "¥" : ""; }
+function periodOf(period: string) { return period === "year" ? " / 年" : period === "month" ? " / 月" : ""; }
 
 function PriceCards({ plans, hasRelease }: { plans: Plan[]; hasRelease: boolean }) {
   return (
@@ -62,47 +56,44 @@ function PriceCards({ plans, hasRelease }: { plans: Plan[]; hasRelease: boolean 
             {feat && <div className="badge">最受欢迎</div>}
             <div className="pn">{p.name}</div>
             <div className="pd">{copy.pd}</div>
-            <div className="amt">
-              {sym}{p.price}
-              {per && <span>{per}</span>}
-            </div>
-            <ul>
-              {(p.features ?? []).map((f, i) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
+            <div className="amt">{sym}{p.price}{per && <span>{per}</span>}</div>
+            <ul>{(p.features ?? []).map((f, i) => <li key={i}>{f}</li>)}</ul>
             {p.plan_key === "free" ? (
-              hasRelease ? (
-                <a className="btn btn-g" href="/api/download?platform=windows">免费下载</a>
-              ) : (
-                <span className="btn btn-g btn-disabled">即将上线</span>
-              )
+              hasRelease ? <a className="btn btn-g" href="/api/download?platform=windows">免费下载</a>
+              : <span className="btn btn-g btn-disabled">即将上线</span>
             ) : (
-              <a className={"btn " + (feat ? "btn-p" : "btn-g")} href="#price">
-                {feat ? "升级 Pro" : "选择年付"}
-              </a>
+              <a className={"btn " + (feat ? "btn-p" : "btn-g")} href="#price">{feat ? "升级 Pro" : "选择年付"}</a>
             )}
             <div className="note">{copy.note}</div>
           </div>
         );
       })}
-      {plans.length === 0 && (
-        <p style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--mist2)" }}>定价加载中…</p>
-      )}
+      {plans.length === 0 && <p style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--mist2)" }}>定价加载中…</p>}
     </div>
   );
 }
 
 export default async function Home() {
-  const [plans, releases] = await Promise.all([getPricing("cn"), getLatestReleases()]);
+  let plans: Plan[] = [];
+  let releases: Record<string, Release> = {};
+  
+  try {
+    [plans, releases] = await Promise.all([getPricing("cn"), getLatestReleases()]);
+  } catch (e) {
+    console.error("Failed to fetch pricing:", e);
+  }
+  
+  // fallback: 如果数据库没返回，用静态数据
+  if (!plans || plans.length === 0) {
+    plans = FALLBACK_PLANS_CN as Plan[];
+  }
+  
   const hasRelease = Object.keys(releases).length > 0;
 
   return (
     <div className="wu-land">
       <Track path="/" />
       <Reveal />
-
-      {/* NAV */}
       <nav className="nav"><div className="wrap">
         <a className="brand" href="#top">
           <WuMark stroke={12} dot={10} />
@@ -119,15 +110,12 @@ export default async function Home() {
           <a className="nav-cta" href="#price">免费下载</a>
         </div>
       </div></nav>
-
       <span id="top"></span>
-
-      {/* HERO */}
       <header className="hero"><div className="wrap">
         <WuMark className="logo" stroke={9} dot={7.4} />
         <h1>一念既出，<span className="spark">万事自成</span>。</h1>
         <div className="en">ONE INTENTION. EVERYTHING DONE.</div>
-        <p className="vp"><b>极致简单 · 无门槛 · 免费。</b><br /><span className="dim">下载打开，说句人话——用着用着，活就悄悄干完了，而且干得漂亮。</span></p>
+        <p className="vp"><b>极致简单 · 无门槛 · 免费。</b><br/><span className="dim">下载打开，说句人话——用着用着，活就悄悄干完了，而且干得漂亮。</span></p>
         <div className="claims">
           <span className="claim">极致简单</span>
           <span className="claim">零门槛</span>
@@ -139,17 +127,14 @@ export default async function Home() {
           <a className="btn btn-p" href="#price">▼ 免费下载 · 30 秒上手</a>
           <a className="btn btn-g" href="#how">看它如何工作</a>
         </div>
-        <div className="plat">{hasRelease ? "免费开始 · 国内直连" : "免费开始 · 安装包即将上线"}　|　macOS · Windows · Linux</div>
-        <HeroDemo
-          title="无为 · 一句话，活自己干完"
-          lines={[
-            { role: "you", text: "你 ▸ 把这份 sales.xlsx 清洗好，导出 CSV 再画张趋势图" },
-            { role: "wu", text: "无为 ▸ 读取 sales.xlsx · 2,317 行" },
-            { role: "wu", text: "　　　 清洗缺失值、统一日期格式 ✓" },
-            { role: "wu", text: "　　　 导出 clean.csv ✓　生成 trend.png ✓" },
-            { role: "ok", text: "✓ 全部搞定，文件已放到你桌面。" },
-          ]}
-        />
+        <div className="plat">免费开始 · 国内直连　|　macOS · Windows · Linux</div>
+        <HeroDemo title="无为 · 一句话，活自己干完" lines={[
+          {role:"you", text:"你 ▸ 把这份 sales.xlsx 清洗好，导出 CSV 再画张趋势图"},
+          {role:"wu", text:"无为 ▸ 读取 sales.xlsx · 2,317 行"},
+          {role:"wu", text:"　　　 清洗缺失值、统一日期格式 ✓"},
+          {role:"wu", text:"　　　 导出 clean.csv ✓　生成 trend.png ✓"},
+          {role:"ok", text:"✓ 全部搞定，文件已放到你桌面。"}
+        ]} />
         <div className="trust">
           <div className="tt">想用哪个大模型，都行 · 也可以什么都不用配</div>
           <div className="logos">
@@ -160,23 +145,17 @@ export default async function Home() {
           </div>
         </div>
       </div></header>
-
-      {/* PAIN -> TURN */}
       <section className="sec turn"><div className="wrap">
         <div className="row rv">
-          <div className="side old">
-            <div className="k">那些强大的 AI 工具</div>
-            <p>Claude Code、Codex 确实强——<br />可要装环境、配 API key、翻墙、敲命令行，还按量计费越用越贵。<b>普通人光是"用上它"，就卡在门外。</b></p>
+          <div className="side old"><div className="k">那些强大的 AI 工具</div>
+            <p>Claude Code、Codex 确实强——<br/>可要装环境、配 API key、翻墙、敲命令行，还按量计费越用越贵。<b>普通人光是"用上它"，就卡在门外。</b></p>
           </div>
           <div className="arrow">→</div>
-          <div className="side new">
-            <div className="k">无为</div>
-            <p>下载，打开，说人话。<br />不配置、不翻墙、不懂代码也行，国内直连、免费开始。<b>同样的强大，这次普通人真能用上——而且用着爽。</b></p>
+          <div className="side new"><div className="k">无为</div>
+            <p>下载，打开，说人话。<br/>不配置、不翻墙、不懂代码也行，国内直连、免费开始。<b>同样的强大，这次普通人真能用上——而且用着爽。</b></p>
           </div>
         </div>
       </div></section>
-
-      {/* CORE VALUE */}
       <section className="sec"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">Why WUWEI</div>
@@ -189,14 +168,11 @@ export default async function Home() {
           <div className="val rv"><div className="n">03</div><h3>活干完，还干得漂亮</h3><p>不是给你建议，是把事做成：文件改好、代码跑通、报告成形。用着用着，活就悄悄干完了，结果拿得出手。</p></div>
         </div>
       </div></section>
-
-      {/* FEATURE ROWS */}
       <section className="sec tint" id="feature"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">Features</div>
           <div className="h2">不止能聊，更<span className="zhu">能成事</span></div>
         </div>
-
         <div className="frow rv">
           <div className="ftext">
             <span className="tag">真执行</span>
@@ -209,7 +185,7 @@ export default async function Home() {
             </ul>
           </div>
           <div className="mock">
-            <div className="bar"><i style={{ background: "#e0645a" }}></i><i style={{ background: "#e2b34a" }}></i><i style={{ background: "#5fb87a" }}></i><span className="t">无为 · Wuwei</span></div>
+            <div className="bar"><i style={{background:"#e0645a"}}></i><i style={{background:"#e2b34a"}}></i><i style={{background:"#5fb87a"}}></i><span className="t">无为 · Wuwei</span></div>
             <div className="body">
               <div className="p">你 ▸</div>
               <div className="u">把项目里所有 console.log 删掉，跑一遍测试</div>
@@ -221,7 +197,6 @@ export default async function Home() {
             </div>
           </div>
         </div>
-
         <div className="frow rev rv">
           <div className="ftext">
             <span className="tag">全后端</span>
@@ -234,7 +209,7 @@ export default async function Home() {
             </ul>
           </div>
           <div className="mock">
-            <div className="bar"><i style={{ background: "#e0645a" }}></i><i style={{ background: "#e2b34a" }}></i><i style={{ background: "#5fb87a" }}></i><span className="t">切换后端</span></div>
+            <div className="bar"><i style={{background:"#e0645a"}}></i><i style={{background:"#e2b34a"}}></i><i style={{background:"#5fb87a"}}></i><span className="t">切换后端</span></div>
             <div className="body">
               <div className="d">当前后端</div>
               <div className="u">◉ Claude　<span className="d">最强推理</span></div>
@@ -245,7 +220,6 @@ export default async function Home() {
             </div>
           </div>
         </div>
-
         <div className="frow rv">
           <div className="ftext">
             <span className="tag">长任务</span>
@@ -258,7 +232,7 @@ export default async function Home() {
             </ul>
           </div>
           <div className="mock">
-            <div className="bar"><i style={{ background: "#e0645a" }}></i><i style={{ background: "#e2b34a" }}></i><i style={{ background: "#5fb87a" }}></i><span className="t">长任务 · 进行中</span></div>
+            <div className="bar"><i style={{background:"#e0645a"}}></i><i style={{background:"#e2b34a"}}></i><i style={{background:"#5fb87a"}}></i><span className="t">长任务 · 进行中</span></div>
             <div className="body">
               <div className="g">任务：重构支付模块（步骤 18 / 24）</div>
               <div className="d">──────────────</div>
@@ -270,8 +244,6 @@ export default async function Home() {
           </div>
         </div>
       </div></section>
-
-      {/* HOW IT WORKS */}
       <section className="sec" id="how"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">How it works</div>
@@ -284,8 +256,6 @@ export default async function Home() {
           <div className="step rv"><div className="num">三</div><h4>事成</h4><p>结果直接落到你的文件、你的项目里。你只管验收，把执行彻底交出去。</p></div>
         </div>
       </div></section>
-
-      {/* SCENES */}
       <section className="sec tint"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">Scenarios</div>
@@ -299,8 +269,6 @@ export default async function Home() {
           <div className="scene rv"><div className="ic">🚀</div><h4>创始人 / 一人公司</h4><p>没有团队？无为就是你的执行团队，把想法当天变成东西。</p></div>
         </div>
       </div></section>
-
-      {/* WHY / COMPARE */}
       <section className="sec why"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">The difference</div>
@@ -308,8 +276,7 @@ export default async function Home() {
           <p className="lead">Claude Code、Codex 很强，但那是给程序员的。无为要做的，是把同样的能力，交到每个普通人手里。</p>
         </div>
         <div className="cmp">
-          <div className="col them rv">
-            <h4>Claude Code · Codex 等专业工具</h4>
+          <div className="col them rv"><h4>Claude Code · Codex 等专业工具</h4>
             <ul>
               <li>面向程序员，先得会命令行</li>
               <li>装环境、配 API key 才跑得起来</li>
@@ -318,8 +285,7 @@ export default async function Home() {
               <li>功能强，可普通人望而却步</li>
             </ul>
           </div>
-          <div className="col us rv">
-            <h4>无为 · Wuwei</h4>
+          <div className="col us rv"><h4>无为 · Wuwei</h4>
             <ul>
               <li>面向所有人，说人话就能用</li>
               <li>下载打开即用，零配置</li>
@@ -330,22 +296,18 @@ export default async function Home() {
           </div>
         </div>
       </div></section>
-
-      {/* BRAND STORY */}
       <section className="sec story" id="story"><div className="wrap">
         <WuMark className="ens rv" stroke={8} dot={7} />
-        <div className="line rv">圆有缺，故能容；念既动，则事成。<br /><span className="zhu">你只管起念，其圆自成。</span></div>
+        <div className="line rv">圆有缺，故能容；念既动，则事成。<br/><span className="zhu">你只管起念，其圆自成。</span></div>
         <div className="para rv">
-          我们把一个两千年的东方智慧，画成了一个符号。<br /><br />
-          一个几乎合拢的圆，是「圆相」——一笔呵成的宇宙。它<b>故意留了一道缺口</b>：因为《道德经》说"大成若缺"——真正的圆满，从不把自己填满，留一口气、留一道门，才能生长、才能容纳万物。<br /><br />
-          缺口上，有<b>一点朱红</b>。那是"一念"，是火种，是这寂静玄黑里唯一的暖。<br /><br />
-          <b>一念既出，圆自合拢。</b>你不必事必躬亲地把每一笔描满——你只需点亮那一念，剩下的，交给无为。<br /><br />
+          我们把一个两千年的东方智慧，画成了一个符号。<br/><br/>
+          一个几乎合拢的圆，是「圆相」——一笔呵成的宇宙。它<b>故意留了一道缺口</b>：因为《道德经》说"大成若缺"——真正的圆满，从不把自己填满，留一口气、留一道门，才能生长、才能容纳万物。<br/><br/>
+          缺口上，有<b>一点朱红</b>。那是"一念"，是火种，是这寂静玄黑里唯一的暖。<br/><br/>
+          <b>一念既出，圆自合拢。</b>你不必事必躬亲地把每一笔描满——你只需点亮那一念，剩下的，交给无为。<br/><br/>
           这，就是 AI 该有的样子：<b>你起念，它成事。无为，而无不为。</b>
         </div>
         <div className="sig rv">— 无为 · 让每个人都能「无为而无不为」</div>
       </div></section>
-
-      {/* PRICING / CONVERSION（动态：Supabase pricing_plans · region=cn · ISR 60s） */}
       <section className="sec tint" id="price"><div className="wrap">
         <div className="sec-head rv">
           <div className="eyebrow">Pricing</div>
@@ -354,8 +316,6 @@ export default async function Home() {
         </div>
         <PriceCards plans={plans} hasRelease={hasRelease} />
       </div></section>
-
-      {/* FINAL CTA */}
       <section className="sec final"><div className="wrap">
         <h2 className="rv">一念既出，<span className="spark">万事自成</span>。</h2>
         <p className="rv">把执行交出去，把时间还给自己。现在就开始，免费。</p>
@@ -365,14 +325,9 @@ export default async function Home() {
         </div>
         <div className="plat">macOS · Windows · Linux　|　自带 key，开箱即用</div>
       </div></section>
-
-      {/* FOOTER */}
       <footer className="land-footer"><div className="wrap">
         <div className="frow2">
-          <div className="fbrand">
-            <WuMark stroke={12} dot={10} />
-            无为 · WUWEI
-          </div>
+          <div className="fbrand"><WuMark stroke={12} dot={10} />无为 · WUWEI</div>
           <div className="fmenu">
             <a href="#feature">功能</a>
             <a href="#how">怎么用</a>
