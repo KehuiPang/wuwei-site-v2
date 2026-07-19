@@ -66,6 +66,76 @@ export function ProductPage({
           </div>
         </section>
 
+        {/* ————— 场景展示（无为本尊专属） ————— */}
+        {trackPath === "/wuwei" && (
+          <section className="max-w-4xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-12">它这样帮你</h2>
+            <div className="space-y-12">
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">改 bug，一句话的事</h3>
+                  <p className="text-inkmute leading-relaxed">报错贴给它，说「修一下」。它读代码、找原因、改好、跑测试，你只管验收。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row-reverse items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">写功能，从想法到代码</h3>
+                  <p className="text-inkmute leading-relaxed">说「加个登录功能」，它搭框架、写逻辑、接数据库，一整套跑通给你看。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">读陌生代码，像读自己写的</h3>
+                  <p className="text-inkmute leading-relaxed">接手老项目，让它带你逛代码库。哪块是干嘛的、怎么串起来的，一讲就明白。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ————— 对比（无为本尊专属） ————— */}
+        {trackPath === "/wuwei" && (
+          <section className="max-w-3xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-8">和 Claude Code，不一样</h2>
+            <div className="overflow-x-auto rounded-2xl border border-mist">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-bg-soft">
+                    <th className="px-4 py-3 text-left font-semibold text-ink">你在乎的</th>
+                    <th className="px-4 py-3 text-left font-semibold text-spark">无为</th>
+                    <th className="px-4 py-3 text-left font-semibold text-ink">Claude Code</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">价格</td>
+                    <td className="px-4 py-3 align-top text-water">免费，开源</td>
+                    <td className="px-4 py-3 align-top text-inkmute">$20/月，订阅制</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">代码安全</td>
+                    <td className="px-4 py-3 align-top text-water">本地优先，代码不出你电脑</td>
+                    <td className="px-4 py-3 align-top text-inkmute">云端处理，代码上传到 Anthropic</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">模型选择</td>
+                    <td className="px-4 py-3 align-top text-water">Claude、GPT、国产模型，随便换</td>
+                    <td className="px-4 py-3 align-top text-inkmute">锁定 Claude，不能换</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">生态</td>
+                    <td className="px-4 py-3 align-top text-water">开源，可审计，可定制</td>
+                    <td className="px-4 py-3 align-top text-inkmute">闭源，黑盒，不可控</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
         {/* ————— 场景展示（无为念专属） ————— */}
         {trackPath === "/nian" && (
           <section className="max-w-4xl mx-auto px-6 py-16 border-t border-mist">
