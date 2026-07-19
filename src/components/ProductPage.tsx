@@ -28,22 +28,17 @@ export function ProductPage({
 
       <main className="flex-1">
         {/* ————— Hero（跟官网首页风格统一） ————— */}
-        <section className="relative text-center pt-24 pb-20 px-6 overflow-hidden">
-          {/* 光晕背景 */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#1D2630] via-transparent to-transparent opacity-60 pointer-events-none" />
-          
+        <section className="relative text-center pt-24 pb-20 px-6 overflow-hidden" style={{background: 'radial-gradient(1100px 620px at 50% 8%, #1D2630 0%, rgba(20, 23, 28, 0) 60%)'}}>
           <div className="relative max-w-4xl mx-auto">
             <div className="flex justify-center mb-8">
               <CircleMark size={64} />
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.15] mb-6">
-              <span className="bg-gradient-to-b from-[#F4F6F8] to-[#AEB8C0] bg-clip-text text-transparent">
-                {hero.h1}
-              </span>
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.15] mb-6" style={{background: 'linear-gradient(92deg, #F4F6F8, #AEB8C0)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+              {hero.h1}
             </h1>
             
-            <p className="text-lg sm:text-xl text-[#8B949D] leading-relaxed max-w-2xl mx-auto mb-10">
+            <p className="text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-10" style={{color: '#8B949D'}}>
               {hero.sub}
             </p>
 
@@ -58,12 +53,12 @@ export function ProductPage({
         </section>
 
         {/* ————— 5 卖点（卡片式，跟官网风格统一） ————— */}
-        <section className="max-w-5xl mx-auto px-6 py-16 border-t border-[#242B34]">
+        <section className="max-w-5xl mx-auto px-6 py-16" style={{borderTop: '1px solid #242B34'}}>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {features.map((f, i) => (
-              <div key={i} className="bg-[rgba(26,31,38,0.5)] rounded-2xl p-6 border border-[#242B34] hover:border-[#35414d] transition-colors">
-                <h3 className="text-lg font-semibold text-[#F4F6F8] mb-3">{f.t}</h3>
-                <p className="text-[#8B949D] leading-relaxed text-sm">{f.d}</p>
+              <div key={i} className="rounded-2xl p-6 transition-colors" style={{background: 'rgba(26, 31, 38, 0.5)', border: '1px solid #242B34'}}>
+                <h3 className="text-lg font-semibold mb-3" style={{color: '#F4F6F8'}}>{f.t}</h3>
+                <p className="leading-relaxed text-sm" style={{color: '#8B949D'}}>{f.d}</p>
               </div>
             ))}
           </div>
