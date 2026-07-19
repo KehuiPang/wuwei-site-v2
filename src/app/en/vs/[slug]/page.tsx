@@ -16,14 +16,15 @@ export async function generateMetadata({
   const { slug } = await params;
   const p = VS_PAGES_EN[slug];
   if (!p) return {};
-  const url = `https://wuweiai.io/en/vs/${slug}`;
+  const canonicalSlug = p.aliasOf ?? slug; // 短链别名的 canonical 指主 slug
+  const url = `https://wuweiai.io/en/vs/${canonicalSlug}`;
   return {
     title: p.meta.title,
     description: p.meta.description,
     alternates: {
       canonical: url,
       // 与同名中文页互标 hreflang
-      languages: { "zh-CN": `https://wuweiai.io/vs/${slug}`, en: url, "x-default": url },
+      languages: { "zh-CN": `https://wuweiai.io/vs/${canonicalSlug}`, en: url, "x-default": url },
     },
     // 门禁页（wuwei-vs-claude-code）待 CEO 终检前不被索引
     robots: p.noindex ? { index: false, follow: true } : { index: true, follow: true },

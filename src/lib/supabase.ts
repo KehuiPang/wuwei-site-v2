@@ -8,9 +8,13 @@ const serviceKey =
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// 前台只读（匿名 key）
+// 前台只读（匿名 key）。env 缺失时用占位值避免模块加载 throw，查询失败由 data.ts 兜底
 export const supabasePublic = () =>
-  createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: false } })
+  createClient(
+    supabaseUrl || 'https://placeholder.supabase.co',
+    supabaseAnonKey || 'missing-anon-key',
+    { auth: { persistSession: false } }
+  )
 
 // 服务端写入（service key，只在 route handler / server 用，绝不下发浏览器）
 // env 缺失时用占位 key 创建（createClient 本身不 throw），查询会失败并由调用方

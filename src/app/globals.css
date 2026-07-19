@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* 无为 VI Design Tokens（landing.css / 组件 class 依赖的 --color-* 真源） */
+@import "./brand-tokens.css";
 
 :root {
   --background: #ffffff;

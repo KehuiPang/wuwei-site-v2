@@ -16,6 +16,7 @@ export type VsPage = {
   product: "wuwei" | "nian"; // JSON-LD 产品名
   noindex?: boolean;
   hasEn?: boolean; // 该中文主页在 /en/vs/[slug] 有英文对标页（用于互标 hreflang）
+  aliasOf?: string; // 短链别名：canonical 指向该主 slug，避免重复收录
   meta: { title: string; description: string };
   h1: string;
   subhead: string;
@@ -553,3 +554,21 @@ export const VS_PAGES_EN: Record<string, VsPage> = {
 export const INDEXABLE_VS_SLUGS_EN = Object.values(VS_PAGES_EN)
   .filter((p) => !p.noindex)
   .map((p) => p.slug);
+
+// ————————————————————————————————————————————————
+// 短链别名：/vs/claude-code ≡ /vs/claude-code-alternative（口头/运营短链，好记好传）。
+// canonical 指主 slug + noindex + 不进 sitemap，只为直接访问 200，不参与索引。
+// 注意：必须放在 INDEXABLE_* 之后定义也不影响（noindex 会被过滤）；generateStaticParams
+// 在运行时读到的是完整表，别名 slug 会被预渲染。
+VS_PAGES["claude-code"] = {
+  ...VS_PAGES["claude-code-alternative"],
+  slug: "claude-code",
+  aliasOf: "claude-code-alternative",
+  noindex: true,
+};
+VS_PAGES_EN["claude-code"] = {
+  ...VS_PAGES_EN["claude-code-free-alternative"],
+  slug: "claude-code",
+  aliasOf: "claude-code-free-alternative",
+  noindex: true,
+};
