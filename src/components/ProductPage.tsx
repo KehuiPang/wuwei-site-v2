@@ -34,21 +34,41 @@ export function ProductPage({
               <CircleMark size={64} />
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold tracking-tight leading-[1.15] mb-6" style={{background: 'linear-gradient(92deg, #F4F6F8, #AEB8C0)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
+            <h1 className="font-semibold tracking-wide leading-[1.2] mb-4" style={{fontSize: 'clamp(38px, 8vw, 72px)', letterSpacing: 'clamp(3px, 1.3vw, 10px)', background: 'linear-gradient(92deg, #F4F6F8, #AEB8C0)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
               {hero.h1}
             </h1>
             
-            <p className="text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-10" style={{color: '#8B949D'}}>
+            <p className="text-sm tracking-widest mb-6" style={{color: '#8FA3B0', letterSpacing: 'clamp(3px, 1vw, 6px)'}}>
+              AI SCREENSHOT TOOL
+            </p>
+            
+            <p className="text-lg sm:text-xl leading-relaxed max-w-2xl mx-auto mb-8" style={{color: '#8B949D'}}>
               {hero.sub}
             </p>
 
-            {/* 主 CTA —— 唯一朱赭实心按钮 */}
-            <div className="flex flex-col items-center gap-4">
+            {/* 核心卖点标签 */}
+            <div className="flex flex-wrap justify-center gap-3 mb-10">
+              {['一框就译', '一框就懂', '一框就解', '免费开源'].map((tag, i) => (
+                <span key={i} className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-sm font-medium" style={{border: '1px solid rgba(192, 95, 60, 0.3)', background: 'rgba(192, 95, 60, 0.1)', color: '#F4F6F8'}}>
+                  <span className="w-2 h-2 rounded-full" style={{background: '#C05F3C', boxShadow: '0 0 8px 1px rgba(192, 95, 60, 0.65)'}}></span>
+                  {tag}
+                </span>
+              ))}
+            </div>
+
+            {/* 双按钮 */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <CTAButton href={downloadHref} label={`${trackPath}#cta`}>{cta}</CTAButton>
               {secondary && (
-                <TextLink href={secondary.href}>{secondary.label}</TextLink>
+                <a href={secondary.href} className="px-6 py-3 rounded-lg border transition-colors" style={{borderColor: '#35414d', color: '#8B949D'}} onMouseEnter={e => {e.currentTarget.style.borderColor = '#C05F3C'; e.currentTarget.style.color = '#F4F6F8'}} onMouseLeave={e => {e.currentTarget.style.borderColor = '#35414d'; e.currentTarget.style.color = '#8B949D'}}>
+                  {secondary.label}
+                </a>
               )}
             </div>
+
+            <p className="text-sm" style={{color: '#6E7780'}}>
+              支持 Windows / macOS / Linux
+            </p>
           </div>
         </section>
 
