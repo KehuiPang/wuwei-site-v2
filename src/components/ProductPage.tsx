@@ -66,6 +66,76 @@ export function ProductPage({
           </div>
         </section>
 
+        {/* ————— 场景展示（截图工具专属） ————— */}
+        {trackPath === "/shot" && (
+          <section className="max-w-4xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-12">它这样帮你</h2>
+            <div className="space-y-12">
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">看外文资料，一框就译</h3>
+                  <p className="text-inkmute leading-relaxed">看到一段英文文档、日文说明，不用切翻译软件。框住它，译文直接浮在原文旁边，看完即走。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row-reverse items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">报错信息，一框就懂</h3>
+                  <p className="text-inkmute leading-relaxed">终端里蹦出一串报错，不用复制去搜。框住它，AI 直接告诉你什么意思、怎么修。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">图表数据，一框就解</h3>
+                  <p className="text-inkmute leading-relaxed">看到一张图表、一个数据看板，框住它，AI 帮你解读趋势、提取关键数字。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ————— 对比（截图工具专属） ————— */}
+        {trackPath === "/shot" && (
+          <section className="max-w-3xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-8">和传统截图，不一样</h2>
+            <div className="overflow-x-auto rounded-2xl border border-mist">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-bg-soft">
+                    <th className="px-4 py-3 text-left font-semibold text-ink">你在乎的</th>
+                    <th className="px-4 py-3 text-left font-semibold text-spark">无为截</th>
+                    <th className="px-4 py-3 text-left font-semibold text-ink">传统截图</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">截完能干嘛</td>
+                    <td className="px-4 py-3 align-top text-water">翻译、识别、问 AI、直接行动</td>
+                    <td className="px-4 py-3 align-top text-inkmute">只能复制粘贴，自己看懂</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">外文内容</td>
+                    <td className="px-4 py-3 align-top text-water">一框就译，不用切软件</td>
+                    <td className="px-4 py-3 align-top text-inkmute">截完再开翻译软件，复制粘贴</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">报错/代码</td>
+                    <td className="px-4 py-3 align-top text-water">一框就懂，直接给解决方案</td>
+                    <td className="px-4 py-3 align-top text-inkmute">截完去搜索引擎，慢慢翻</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">价格</td>
+                    <td className="px-4 py-3 align-top text-water">免费，开源</td>
+                    <td className="px-4 py-3 align-top text-inkmute">部分功能收费，或捆绑销售</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
         {/* ————— 收尾 ————— */}
         <section className="max-w-2xl mx-auto px-6 py-20 border-t border-mist text-center">
           <p className="text-lg text-inkmute leading-relaxed">{closing}</p>
