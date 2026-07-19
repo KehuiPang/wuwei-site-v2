@@ -34,8 +34,18 @@ export function ProductPage({
               <CircleMark size={64} />
             </div>
             
-            <h1 className="font-semibold tracking-wide leading-[1.2] mb-4" style={{fontSize: 'clamp(38px, 8vw, 72px)', letterSpacing: 'clamp(3px, 1.3vw, 10px)', background: 'linear-gradient(92deg, #F4F6F8, #AEB8C0)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent'}}>
-              {hero.h1}
+            <h1 className="font-semibold tracking-wide leading-[1.2] mb-4" style={{fontSize: 'clamp(38px, 8vw, 72px)', letterSpacing: 'clamp(3px, 1.3vw, 10px)'}}>
+              <svg width="100%" height="1.2em" viewBox="0 0 800 100" preserveAspectRatio="xMidYMid meet" style={{overflow: 'visible'}}>
+                <defs>
+                  <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stopColor="#F4F6F8" />
+                    <stop offset="100%" stopColor="#AEB8C0" />
+                  </linearGradient>
+                </defs>
+                <text x="50%" y="50%" dominantBaseline="middle" textAnchor="middle" fill="url(#heroGrad)" fontSize="90" fontWeight="600" fontFamily="system-ui, -apple-system, sans-serif" letterSpacing="8">
+                  {hero.h1}
+                </text>
+              </svg>
             </h1>
             
             <p className="text-sm tracking-widest mb-6" style={{color: '#8FA3B0', letterSpacing: 'clamp(3px, 1vw, 6px)'}}>
