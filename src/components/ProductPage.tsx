@@ -60,7 +60,7 @@ export function ProductPage({
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-6">
               <CTAButton href={downloadHref} label={`${trackPath}#cta`}>{cta}</CTAButton>
               {secondary && (
-                <a href={secondary.href} className="px-6 py-3 rounded-lg border transition-colors" style={{borderColor: '#35414d', color: '#8B949D'}} onMouseEnter={e => {e.currentTarget.style.borderColor = '#C05F3C'; e.currentTarget.style.color = '#F4F6F8'}} onMouseLeave={e => {e.currentTarget.style.borderColor = '#35414d'; e.currentTarget.style.color = '#8B949D'}}>
+                <a href={secondary.href} className="px-6 py-3 rounded-lg border transition-colors hover:border-[#C05F3C] hover:text-[#F4F6F8]" style={{borderColor: '#35414d', color: '#8B949D'}}>
                   {secondary.label}
                 </a>
               )}
