@@ -136,6 +136,76 @@ export function ProductPage({
           </section>
         )}
 
+        {/* ————— 场景展示（无为念专属） ————— */}
+        {trackPath === "/nian" && (
+          <section className="max-w-4xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-12">它这样帮你</h2>
+            <div className="space-y-12">
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">写代码注释，说到哪写到哪</h3>
+                  <p className="text-inkmute leading-relaxed">写函数注释、提交信息，不用停下手去敲键盘。按住说话，字直接落进编辑器，思路不断。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row-reverse items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">回消息写文档，说话成文</h3>
+                  <p className="text-inkmute leading-relaxed">微信回复、邮件、文档初稿，说出来就是一段能直接发的文字。口误、重复、缺的标点，它顺手补齐。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+              <div className="flex flex-col sm:flex-row items-center gap-8">
+                <div className="flex-1">
+                  <h3 className="text-lg font-semibold text-water mb-2">中英文混说，它都接得住</h3>
+                  <p className="text-inkmute leading-relaxed">技术名词、英文术语、人名地名，混着说也能准确识别。自带私人记忆库，越用越懂你。</p>
+                </div>
+                <div className="w-full sm:w-80 h-48 bg-surface rounded-xl border border-mist flex items-center justify-center text-mute text-sm">场景示意</div>
+              </div>
+            </div>
+          </section>
+        )}
+
+        {/* ————— 对比（无为念专属） ————— */}
+        {trackPath === "/nian" && (
+          <section className="max-w-3xl mx-auto px-6 py-16 border-t border-mist">
+            <h2 className="text-2xl font-semibold text-ink text-center mb-8">和打字，不一样</h2>
+            <div className="overflow-x-auto rounded-2xl border border-mist">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-bg-soft">
+                    <th className="px-4 py-3 text-left font-semibold text-ink">你在乎的</th>
+                    <th className="px-4 py-3 text-left font-semibold text-spark">无为念</th>
+                    <th className="px-4 py-3 text-left font-semibold text-ink">传统打字</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">速度</td>
+                    <td className="px-4 py-3 align-top text-water">说话多快，字就多快</td>
+                    <td className="px-4 py-3 align-top text-inkmute">一分钟几十字，手酸</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">思路</td>
+                    <td className="px-4 py-3 align-top text-water">说话不断，思路不断</td>
+                    <td className="px-4 py-3 align-top text-inkmute">打字打断思考，卡壳</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">修改</td>
+                    <td className="px-4 py-3 align-top text-water">AI 自动润色，直接能发</td>
+                    <td className="px-4 py-3 align-top text-inkmute">自己删改，来回折腾</td>
+                  </tr>
+                  <tr className="border-t border-mist">
+                    <td className="px-4 py-3 align-top font-medium text-ink">价格</td>
+                    <td className="px-4 py-3 align-top text-water">免费，开源</td>
+                    <td className="px-4 py-3 align-top text-inkmute">输入法会员、语音转写收费</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
         {/* ————— 场景展示（截图工具专属） ————— */}
         {trackPath === "/shot" && (
           <section className="max-w-4xl mx-auto px-6 py-16 border-t border-mist">
