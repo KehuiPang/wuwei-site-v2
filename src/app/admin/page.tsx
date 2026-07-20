@@ -122,6 +122,38 @@ export default async function AdminPage({
         </form>
       </div>
 
+      <div style={card}>
+        <div style={{ fontSize: 15, marginBottom: 20 }}>
+          快捷入口
+        </div>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <a
+            href={`/admin/operations?key=${encodeURIComponent(key)}`}
+            style={{
+              ...btnBase,
+              background: "var(--color-water)",
+              color: "#F4F6F8",
+              textDecoration: "none",
+              textAlign: "center",
+            }}
+          >
+            🎛️ 运营配置
+          </a>
+          <a
+            href={`/admin/analytics?key=${encodeURIComponent(key)}`}
+            style={{
+              ...btnBase,
+              background: "var(--color-bamboo)",
+              color: "#F4F6F8",
+              textDecoration: "none",
+              textAlign: "center",
+            }}
+          >
+            📊 访问统计
+          </a>
+        </div>
+      </div>
+
       <p style={{ color: "var(--color-mute)", fontSize: 12, marginTop: 20 }}>
         访问受 ADMIN_ACCESS_KEY 保护，请勿分享带 key 的链接。
       </p>

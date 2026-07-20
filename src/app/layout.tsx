@@ -28,7 +28,14 @@ export const metadata: Metadata = {
     title: "无为 Wuwei · 一念既出，万事自成",
     description: "普通人零门槛、免费、丝滑就能用的 AI 客户端。",
   },
-  alternates: { canonical: SITE },
+  alternates: {
+    canonical: SITE,
+    languages: {
+      "zh-CN": SITE,
+      en: `${SITE}/en`,
+      "x-default": `${SITE}/en`,
+    },
+  },
   robots: { index: true, follow: true },
 };
 

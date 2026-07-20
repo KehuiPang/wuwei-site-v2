@@ -18,13 +18,38 @@ export function ProductPage({
   content: ProductContent;
   locale: Locale;
   trackPath: string;
-  downloadHref: string; // 主 CTA 去处（默认回首页下载区）
+  downloadHref: string; // 主 CTA 去处（真实下载链接）
 }) {
   const { hero, cta, secondary, features, closing } = content;
+
+  // JSON-LD: SoftwareApplication 结构化数据
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: locale === "zh" ? (trackPath.includes("nian") ? "无为念" : trackPath.includes("shot") ? "无为截" : "无为") : (trackPath.includes("voice") ? "Wuwei Voice" : trackPath.includes("shot") ? "Wuwei Shot" : "Wuwei"),
+    applicationCategory: trackPath.includes("nian") || trackPath.includes("voice") ? "UtilitiesApplication" : "ProductivityApplication",
+    operatingSystem: "Windows, macOS, Linux",
+    offers: {
+      "@type": "Offer",
+      price: "0",
+      priceCurrency: "USD",
+    },
+    description: content.meta.description,
+    url: `https://wuweiai.io${trackPath}`,
+    softwareVersion: "1.0.0",
+    inLanguage: locale === "zh" ? "zh-CN" : "en",
+  };
+
   return (
     <>
       <SiteHeader locale={locale} />
       <Track path={trackPath} />
+
+      {/* JSON-LD 结构化数据 */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
 
       <main className="flex-1">
         {/* ————— Hero ————— */}
@@ -50,7 +75,7 @@ export function ProductPage({
 
           {/* 主 CTA —— 唯一朱赭实心按钮 */}
           <div className="mt-11 flex flex-col items-center gap-4">
-            <CTAButton href={downloadHref} label={`${trackPath}#cta`}>{cta}</CTAButton>
+            <CTAButton href={downloadHref} label={`${trackPath}#cta`} product={trackPath.includes("voice") || trackPath.includes("nian") ? "nian" : trackPath.includes("shot") ? "shot" : "wuwei"}>{cta}</CTAButton>
             {secondary && (
               <TextLink href={secondary.href}>{secondary.label}</TextLink>
             )}
@@ -70,7 +95,7 @@ export function ProductPage({
         <section className="max-w-2xl mx-auto px-6 py-20 border-t border-mist text-center">
           <p className="text-lg text-inkmute leading-relaxed">{closing}</p>
           <div className="mt-9 flex justify-center">
-            <CTAButton href={downloadHref} label={`${trackPath}#closing-cta`}>{cta}</CTAButton>
+            <CTAButton href={downloadHref} label={`${trackPath}#closing-cta`} product={trackPath.includes("voice") || trackPath.includes("nian") ? "nian" : trackPath.includes("shot") ? "shot" : "wuwei"}>{cta}</CTAButton>
           </div>
         </section>
       </main>

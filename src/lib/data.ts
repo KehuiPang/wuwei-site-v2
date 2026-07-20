@@ -12,6 +12,8 @@ export type Plan = {
   badge: string | null;
   features: string[];
   sort_order: number;
+  is_active: boolean;
+  region: string;
 };
 
 export type Release = {

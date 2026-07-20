@@ -6,20 +6,26 @@ export function CTAButton({
   href,
   children,
   label,
+  product,
 }: {
   href: string;
   children: React.ReactNode;
   label?: string; // 埋点标识（哪个页面的 CTA）
+  product?: string; // 产品标识（wuwei/nian/shot）
 }) {
   const onClick = useCallback(() => {
     try {
-      const body = JSON.stringify({ event_type: "cta_click", path: label ?? href });
+      const body = JSON.stringify({
+        event_type: "cta_click",
+        path: label ?? href,
+        product: product ?? null,
+      });
       const blob = new Blob([body], { type: "application/json" });
       navigator.sendBeacon?.("/api/track", blob);
     } catch {
       /* 埋点失败不影响跳转 */
     }
-  }, [href, label]);
+  }, [href, label, product]);
 
   return (
     <a

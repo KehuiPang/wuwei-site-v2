@@ -11,18 +11,25 @@ function hashIp(ip: string | null): string | null {
 }
 
 const PLATFORMS = new Set(["windows", "macos", "linux"]);
+const PRODUCTS = new Set(["wuwei", "nian", "shot"]);
 
 // 下载跳转：查最新已发布包 → 记一条 download 埋点 → 302 到文件
 export async function GET(req: NextRequest) {
   const platform = req.nextUrl.searchParams.get("platform") || "";
+  const product = req.nextUrl.searchParams.get("product") || "wuwei";
+
   if (!PLATFORMS.has(platform)) {
     return NextResponse.json({ error: "bad platform" }, { status: 400 });
+  }
+  if (!PRODUCTS.has(product)) {
+    return NextResponse.json({ error: "bad product" }, { status: 400 });
   }
 
   const { data } = await supabasePublic()
     .from("releases")
     .select("version,file_url")
     .eq("platform", platform)
+    .eq("product", product)
     .eq("is_published", true)
     .eq("channel", "stable")
     .order("created_at", { ascending: false })
@@ -47,12 +54,13 @@ export async function GET(req: NextRequest) {
     .from("analytics_events")
     .insert({
       event_type: "download",
-      path: "/api/download",
+      path: `/api/download?product=${product}&platform=${platform}`,
       platform,
+      product,
       country,
       ip_hash: hashIp(ip),
       ua: req.headers.get("user-agent")?.slice(0, 400) ?? null,
-      meta: { version: data.version },
+      meta: { version: data.version, product },
     })
     .then(() => {}, () => {});
 

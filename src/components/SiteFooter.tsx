@@ -6,6 +6,15 @@ import { CircleMark } from "./ui";
 export function SiteFooter({ locale }: { locale: Locale }) {
   const t = UI_TEXT[locale];
   const homeHref = locale === "en" ? "/en" : "/";
+  // 英文站产品页路由映射
+  const productHref = (key: string) => {
+    if (locale === "en") {
+      if (key === "nian") return "/en/voice";
+      if (key === "shot") return "/en/shot";
+      return "/en";
+    }
+    return PRODUCTS.find((p) => p.key === key)?.href ?? "/";
+  };
   return (
     <footer className="border-t border-mist py-12 mt-8">
       <div className="max-w-6xl mx-auto px-6 flex flex-col sm:flex-row justify-between gap-8">
@@ -18,7 +27,7 @@ export function SiteFooter({ locale }: { locale: Locale }) {
         </div>
         <nav className="flex flex-wrap gap-x-8 gap-y-2 text-sm text-inkmute">
           {PRODUCTS.map((p) => (
-            <Link key={p.key} href={p.href} className="hover:text-water transition">
+            <Link key={p.key} href={productHref(p.key)} className="hover:text-water transition">
               {p.name[locale]}
             </Link>
           ))}
