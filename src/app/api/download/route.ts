@@ -13,8 +13,7 @@ function hashIp(ip: string | null): string | null {
 const PLATFORMS = new Set(["windows", "macos", "linux"]);
 const PRODUCTS = new Set(["wuwei", "nian", "shot"]);
 
-// GitHub Release 下载地址映射（v1.3.3）
-// 无为 Pro 客户端已全平台上线，无为念/无为截暂共用同一客户端
+// GitHub Release 下载地址映射
 const GITHUB_RELEASES: Record<string, Record<string, string>> = {
   wuwei: {
     windows: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro-1.3.3-setup.exe",
@@ -27,10 +26,17 @@ const GITHUB_RELEASES: Record<string, Record<string, string>> = {
     linux: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro_1.3.3_amd64.deb",
   },
   shot: {
-    windows: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro-1.3.3-setup.exe",
-    macos: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/Pro-1.3.3.dmg",
-    linux: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro_1.3.3_amd64.deb",
+    windows: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-Windows-x64.exe",
+    macos: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-macOS-x64.zip",
+    linux: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-Linux-x64.AppImage",
   },
+};
+
+// 版本号映射
+const VERSIONS: Record<string, string> = {
+  wuwei: "1.3.3",
+  nian: "1.3.3",
+  shot: "2.0.0",
 };
 
 // 下载跳转：优先 GitHub Release → 回退数据库 → 404
@@ -46,7 +52,7 @@ export async function GET(req: NextRequest) {
   }
 
   let fileUrl: string | null = null;
-  let version = "1.3.3";
+  let version = VERSIONS[product] || "latest";
 
   // 1) 先查 GitHub Release 映射
   const ghUrl = GITHUB_RELEASES[product]?.[platform];
