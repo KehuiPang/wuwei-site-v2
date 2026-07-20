@@ -13,8 +13,27 @@ function hashIp(ip: string | null): string | null {
 const PLATFORMS = new Set(["windows", "macos", "linux"]);
 const PRODUCTS = new Set(["wuwei", "nian", "shot"]);
 
-// 下载跳转：查最新已发布包 → 记一条 download 埋点 → 302 到文件
-// 优先从本地 /downloads 目录找文件，没有再查数据库
+// GitHub Release 下载地址映射（v1.3.3）
+// 无为 Pro 客户端已全平台上线，无为念/无为截暂共用同一客户端
+const GITHUB_RELEASES: Record<string, Record<string, string>> = {
+  wuwei: {
+    windows: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro-1.3.3-setup.exe",
+    macos: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/Pro-1.3.3.dmg",
+    linux: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro_1.3.3_amd64.deb",
+  },
+  nian: {
+    windows: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro-1.3.3-setup.exe",
+    macos: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/Pro-1.3.3.dmg",
+    linux: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro_1.3.3_amd64.deb",
+  },
+  shot: {
+    windows: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro-1.3.3-setup.exe",
+    macos: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/Pro-1.3.3.dmg",
+    linux: "https://github.com/wuwei-io/wuwei-pro/releases/download/v1.3.3/wuwei-pro_1.3.3_amd64.deb",
+  },
+};
+
+// 下载跳转：优先 GitHub Release → 回退数据库 → 404
 export async function GET(req: NextRequest) {
   const platform = req.nextUrl.searchParams.get("platform") || "";
   const product = req.nextUrl.searchParams.get("product") || "wuwei";
@@ -26,18 +45,15 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "bad product" }, { status: 400 });
   }
 
-  // 先尝试本地文件（public/downloads/）
-  const localFile = `/downloads/${product}-${platform}-latest.exe`;
-  const localPath = `${process.cwd()}/public${localFile}`;
-  const fs = await import("fs");
   let fileUrl: string | null = null;
-  let version = "latest";
+  let version = "1.3.3";
 
-  if (fs.existsSync(localPath)) {
-    // 本地有文件，直接用
-    fileUrl = localFile;
+  // 1) 先查 GitHub Release 映射
+  const ghUrl = GITHUB_RELEASES[product]?.[platform];
+  if (ghUrl) {
+    fileUrl = ghUrl;
   } else {
-    // 查数据库
+    // 2) 回退查数据库
     const { data } = await supabasePublic()
       .from("releases")
       .select("version,file_url")
@@ -49,11 +65,14 @@ export async function GET(req: NextRequest) {
       .limit(1)
       .maybeSingle();
 
-    if (!data?.file_url) {
-      return NextResponse.json({ error: "no release yet" }, { status: 404 });
+    if (data?.file_url) {
+      fileUrl = data.file_url;
+      version = data.version;
     }
-    fileUrl = data.file_url;
-    version = data.version;
+  }
+
+  if (!fileUrl) {
+    return NextResponse.json({ error: "no release yet" }, { status: 404 });
   }
 
   const ip =
@@ -80,18 +99,5 @@ export async function GET(req: NextRequest) {
     })
     .then(() => {}, () => {});
 
-  // 如果是本地文件，直接返回文件；如果是外部 URL，302 跳转
-  if (fileUrl && fileUrl.startsWith("/downloads/")) {
-    const fileBuffer = fs.readFileSync(`${process.cwd()}/public${fileUrl}`);
-    const fileName = fileUrl.split("/").pop() || "download.exe";
-    return new NextResponse(fileBuffer, {
-      status: 200,
-      headers: {
-        "Content-Type": "application/x-msdownload",
-        "Content-Disposition": `attachment; filename="${fileName}"`,
-      },
-    });
-  }
-
-  return NextResponse.redirect(fileUrl || "https://wuweiai.io", 302);
+  return NextResponse.redirect(fileUrl, 302);
 }
