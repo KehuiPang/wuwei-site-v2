@@ -1,10 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'standalone',
-  images: {
-    unoptimized: true
-  }
+  async rewrites() {
+    return [
+      {
+        source: '/zh',
+        destination: '/',
+      },
+    ];
+  },
 };
 
 export default nextConfig;

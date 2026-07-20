@@ -16,8 +16,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const p = VS_PAGES[slug];
   if (!p) return {};
-  const canonicalSlug = p.aliasOf ?? slug; // 短链别名的 canonical 指主 slug
-  const url = `https://wuweiai.io/vs/${canonicalSlug}`;
+  const url = `https://wuweiai.io/vs/${slug}`;
   // 中文主页；同名英文对标页在 /en/vs/[slug]，有则互标 hreflang
   return {
     title: p.meta.title,
@@ -25,7 +24,7 @@ export async function generateMetadata({
     alternates: {
       canonical: url,
       ...(p.hasEn
-        ? { languages: { "zh-CN": url, en: `https://wuweiai.io/en/vs/${canonicalSlug}` } }
+        ? { languages: { "zh-CN": url, en: `https://wuweiai.io/en/vs/${slug}` } }
         : {}),
     },
     // 门禁页（wuwei-vs-claude-code）待 CEO 终检前不被索引

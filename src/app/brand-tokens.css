@@ -19,16 +19,16 @@
   --color-indigo: #274A63;       /* = water */
   --color-cinnabar: #C05F3C;     /* = spark */
 
-  /* —— 中性 / 面 / 描边（深色模式专用） —— */
-  --color-surface: #1A1F26;      /* 卡片 / 面（深灰） */
-  --color-bg-soft: #12161C;      /* 次级底（更深） */
-  --color-field: #1A1F26;        /* 输入底 */
-  --color-mist: #2A313A;         /* 淡雾 · 分隔 / 卡片边框 */
-  --color-inkmute: #9AA3AB;      /* 次要文字（浅灰） */
+  /* —— 中性 / 面 / 描边 —— */
+  --color-surface: #FFFFFF;      /* 卡片 / 面 */
+  --color-bg-soft: #EEF1F4;      /* 次级底 */
+  --color-field: #F4F6F8;        /* 输入底 */
+  --color-mist: #E7EBEF;         /* 淡雾 · 分隔 / 卡片（现有在用） */
+  --color-inkmute: #5B636E;      /* 次要文字（现有在用） */
   --color-dim: #6B747C;          /* 次要文字 */
-  --color-mute: #4A525A;         /* 占位 / 更次要 */
-  --color-border: #2A313A;       /* 分隔线 */
-  --color-border-strong: #3A424C;/* hover 描边 */
+  --color-mute: #9AA3AB;         /* 占位 / 更次要 */
+  --color-border: #E6EAEE;       /* 分隔线 */
+  --color-border-strong: #D7DCE1;/* hover 描边 */
 
   /* —— 功能色（低饱和，与品牌色区隔） —— */
   --color-success: #5C8A73;      /* = 竹青 */
@@ -38,22 +38,4 @@
 
   /* —— 字体 —— */
   --font-sans: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
-}
-
-/* ============================================================
-   深色模式覆盖（强制深色，不跟随系统）
-   ============================================================ */
-:root {
-  --background: #0F1216;         /* 玄墨黑底 */
-  --foreground: #E8EAED;         /* 月白字 */
-  
-  /* 深色模式下，文字颜色应该是浅色 */
-  --color-ink: #E8EAED;          /* 主文字 = 月白 */
-  --color-inkmute: #9AA3AB;      /* 次要文字 = 浅灰 */
-  --color-mute: #6B747C;         /* 占位文字 = 中灰 */
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
 }

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { INDEXABLE_VS_SLUGS, INDEXABLE_VS_SLUGS_EN, VS_PAGES } from "@/lib/vs";
+import { INDEXABLE_VS_SLUGS, INDEXABLE_VS_SLUGS_EN, VS_PAGES, VS_PAGES_EN } from "@/lib/vs";
 
 // 全前台页 + 多语言 alternates（/ 与 /en 互标 hreflang）。/admin、/api 不入（robots 屏蔽）。
 // /vs 对标落地页只收录未被 noindex 门禁的（wuwei-vs-claude-code 待 CEO 终检，排除）。
@@ -43,8 +43,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       alternates: { languages: { "zh-CN": base, en: `${base}/en` } },
     },
     { url: `${base}/wuwei`, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${base}/nian`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${base}/shot`, changeFrequency: "weekly", priority: 0.8 },
+    { url: `${base}/nian`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { "zh-CN": `${base}/nian`, en: `${base}/en/voice` } } },
+    { url: `${base}/shot`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { "zh-CN": `${base}/shot`, en: `${base}/en/shot` } } },
+    { url: `${base}/en/voice`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { "zh-CN": `${base}/nian`, en: `${base}/en/voice` } } },
+    { url: `${base}/en/shot`, changeFrequency: "weekly", priority: 0.8, alternates: { languages: { "zh-CN": `${base}/shot`, en: `${base}/en/shot` } } },
     ...vsZh,
     ...vsEn,
   ];

@@ -7,23 +7,31 @@ import { LanguageSwitch } from "./LanguageSwitch";
 export function SiteHeader({ locale }: { locale: Locale }) {
   const t = UI_TEXT[locale];
   const homeHref = locale === "en" ? "/en" : "/";
-  // 英文站产品页暂用锚点/中文页兜底：英文详情页二期补，先指向中文详情或首页锚点
+  // 英文站产品页路由映射
+  const productHref = (key: string) => {
+    if (locale === "en") {
+      if (key === "nian") return "/en/voice";
+      if (key === "shot") return "/en/shot";
+      return "/en";
+    }
+    return PRODUCTS.find((p) => p.key === key)?.href ?? "/";
+  };
   return (
-    <header className="sticky top-0 z-30 backdrop-blur border-b" style={{background: 'rgba(15, 18, 22, 0.8)', borderColor: '#2A313A'}}>
+    <header className="sticky top-0 z-30 backdrop-blur bg-paper/80 border-b border-mist">
       <nav className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link href={homeHref} className="flex items-center gap-2 font-semibold" style={{color: '#E8EAED'}}>
+        <Link href={homeHref} className="flex items-center gap-2 font-semibold text-ink">
           <CircleMark size={28} />
           <span>{locale === "en" ? "Wuwei" : "无为"}</span>
         </Link>
 
         <div className="flex items-center gap-5 text-sm">
-          <div className="hidden sm:flex items-center gap-4" style={{color: '#9AA3AB'}}>
+          <div className="hidden sm:flex items-center gap-4 text-inkmute">
             {PRODUCTS.map((p) => (
-              <Link key={p.key} href={p.href} className="hover:text-[#6F9FAD] transition">
+              <Link key={p.key} href={productHref(p.key)} className="hover:text-water transition">
                 {p.name[locale]}
               </Link>
             ))}
-            <Link href={`${homeHref}#pricing`} className="hover:text-[#6F9FAD] transition">
+            <Link href={`${homeHref}#pricing`} className="hover:text-water transition">
               {t.nav.pricing}
             </Link>
           </div>

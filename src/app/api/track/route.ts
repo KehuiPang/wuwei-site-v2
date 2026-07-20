@@ -11,7 +11,15 @@ function hashIp(ip: string | null): string | null {
   return createHash("sha256").update(salt + ip).digest("hex").slice(0, 32);
 }
 
-const ALLOWED = new Set(["pageview", "download", "signup", "cta_click"]);
+const ALLOWED = new Set([
+  "pageview",
+  "download",
+  "signup",
+  "cta_click",
+  "client_activate",   // 客户端激活
+  "client_login",      // 客户端登录
+  "client_usage",      // 客户端使用
+]);
 
 export async function POST(req: NextRequest) {
   try {
@@ -36,6 +44,7 @@ export async function POST(req: NextRequest) {
       country,
       lang: b.lang ?? null,
       platform: b.platform ?? null,
+      product: b.product ?? null,
       ip_hash: hashIp(ip),
       anon_id: b.anon_id ?? null,
       ua: req.headers.get("user-agent")?.slice(0, 400) ?? null,

@@ -4,10 +4,9 @@ import Link from "next/link";
 
 export function CircleMark({ size = 40 }: { size?: number }) {
   // 圆相 + 缺口一点朱 —— 品牌主标意象（"一念之门·圆相"）
-  // 暗色背景版：圆环用月白色，确保在深色背景上可见
   return (
     <svg width={size} height={size} viewBox="0 0 48 48" fill="none" aria-hidden>
-      <circle cx="24" cy="24" r="18" stroke="#E8EAED" strokeWidth="2.5"
+      <circle cx="24" cy="24" r="18" stroke="#16191E" strokeWidth="2.5"
         strokeLinecap="round" strokeDasharray="102 8" transform="rotate(-90 24 24)" />
       <circle cx="24" cy="10.5" r="3" fill="#C05F3C" />
     </svg>
