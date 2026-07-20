@@ -19,11 +19,11 @@
 
   /* —— 底 / 文字（dark 默认）—— */
   --ink: #14171C;        /* 页面底 */
-  --l-paper: #F4F6F8;    /* 主文字 */
-  --mist: #B7C0C7;       /* 次文字 */
-  --mist2: #8B949D;      /* 三级文字 */
-  --mute: #6E7780;       /* 更弱文字（plat / note / copy）*/
-  --mute2: #5f6870;      /* 最弱（tt / 版权）*/
+  --l-paper: #FFFFFF;    /* 主文字 - 纯白更亮 */
+  --mist: #D0D6DC;       /* 次文字 - 调亮 */
+  --mist2: #A8B0B8;      /* 三级文字 - 调亮 */
+  --mute: #8A929A;       /* 更弱文字（plat / note / copy）- 调亮 */
+  --mute2: #7A828A;      /* 最弱（tt / 版权）- 调亮 */
 
   /* —— 描边 —— */
   --line: #242B34;
@@ -41,8 +41,8 @@
   --tint-water: rgba(39, 74, 99, .10);      /* why 分区水染 */
   --hero-glow: #1D2630;                      /* hero 顶光晕 */
   --story-glow: #191f27;                     /* 品牌故事光晕 */
-  --h1-grad-a: #F4F6F8;                      /* 大标题渐变字上 */
-  --h1-grad-b: #AEB8C0;                      /* 大标题渐变字下 */
+  --h1-grad-a: #FFFFFF;                      /* 大标题渐变字上 - 纯白 */
+  --h1-grad-b: #D0D6DC;                      /* 大标题渐变字下 - 调亮 */
   --spark-soft: rgba(192, 95, 60, .08);     /* 朱极淡填充 */
   --spark-line: rgba(192, 95, 60, .38);     /* 朱描边 */
 
