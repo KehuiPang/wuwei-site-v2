@@ -34,9 +34,9 @@ const GITHUB_RELEASES: Record<string, Record<string, string>> = {
     linux: "https://github.com/wuwei-io/wuwei-download/releases/download/voice-v0.1.0/WuweiVoice_0.1.0_amd64.AppImage",
   },
   shot: {
-    windows: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-Windows-x64.exe",
-    macos: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-macOS-x64.zip",
-    linux: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/wuwei-shot-Linux-x64.AppImage",
+    windows: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/Wuwei-Shot-2.0.0-Windows-x64.zip",
+    macos: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/Wuwei-Shot-2.0.0-macOS-x64.zip",
+    linux: "https://github.com/wuwei-io/wuwei-shot/releases/download/v2.0.0/Wuwei-Shot-2.0.0-Linux-x64.AppImage",
   },
 };
 
