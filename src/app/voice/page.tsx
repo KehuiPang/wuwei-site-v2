@@ -318,6 +318,55 @@ export default function VoicePage() {
         <div className="sig rv">— 无为念 · 让表达，追上思考</div>
       </div></section>
 
+      {/* ——— 定价 ——— */}
+      <section className="sec" id="price" style={{background:"linear-gradient(180deg,rgba(26,31,38,.35),rgba(20,23,28,0))"}}><div className="wrap">
+        <div className="sec-head rv">
+          <div className="eyebrow">Pricing</div>
+          <div className="h2">免费开始，<span className="zhu">用顺了再说</span></div>
+          <p className="lead">下载即用，先免费体验。用出感觉、需要更多，再升级——一步都不勉强。</p>
+        </div>
+        <div className="prices">
+          <div className="price rv">
+            <div className="pn">免费版</div>
+            <div className="pd">按住说话，松手成文</div>
+            <div className="amt">¥0</div>
+            <ul>
+              <li>按住说话，松手成文</li>
+              <li>AI 把话说圆</li>
+              <li>中文越用越懂你</li>
+              <li>数据本地</li>
+            </ul>
+            <a className="btn btn-g" href="/api/download?product=voice&platform=windows" style={{justifyContent:"center"}}>免费下载</a>
+            <div className="note">无需注册，下载即用</div>
+          </div>
+          <div className="price feat rv">
+            <div className="badge">最受欢迎</div>
+            <div className="pn">无为念 Pro</div>
+            <div className="pd">更快响应，更长录音</div>
+            <div className="amt">¥19 <span>/ 月</span></div>
+            <ul>
+              <li>免费版全部功能</li>
+              <li>更快响应</li>
+              <li>更长录音</li>
+              <li>优先支持</li>
+            </ul>
+            <a className="btn btn-p" href="#price" style={{justifyContent:"center"}}>升级 Pro</a>
+            <div className="note">随时可升级 / 取消</div>
+          </div>
+          <div className="price rv">
+            <div className="pn">无为念 Pro 年付</div>
+            <div className="pd">付 10 月送 2 月，更划算</div>
+            <div className="amt">¥99 <span>/ 年</span></div>
+            <ul>
+              <li>Pro 全部功能</li>
+              <li>年付更划算</li>
+            </ul>
+            <a className="btn btn-g" href="#price" style={{justifyContent:"center"}}>选择年付</a>
+            <div className="note">≈¥8.3/月</div>
+          </div>
+        </div>
+      </div></section>
+
       {/* ——— 最终 CTA ——— */}
       <section className="sec final"><div className="wrap">
         <h2 className="rv">让表达，<span className="spark">追上思考</span>。</h2>

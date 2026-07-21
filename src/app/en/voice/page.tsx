@@ -318,6 +318,55 @@ export default function VoicePageEn() {
         <div className="sig rv">— Wuwei Voice · Let your words keep up with your mind</div>
       </div></section>
 
+      {/* ——— Pricing ——— */}
+      <section className="sec" id="price" style={{background:"linear-gradient(180deg,rgba(26,31,38,.35),rgba(20,23,28,0))"}}><div className="wrap">
+        <div className="sec-head rv">
+          <div className="eyebrow">Pricing</div>
+          <div className="h2">Start free, <span className="zhu">upgrade when ready</span></div>
+          <p className="lead">Download and use immediately. Upgrade when you need more — no pressure.</p>
+        </div>
+        <div className="prices">
+          <div className="price rv">
+            <div className="pn">Free</div>
+            <div className="pd">Hold to speak, release to text</div>
+            <div className="amt">$0</div>
+            <ul>
+              <li>Hold to speak, release to text</li>
+              <li>AI cleans up your words</li>
+              <li>Chinese-friendly</li>
+              <li>Local data</li>
+            </ul>
+            <a className="btn btn-g" href="/api/download?product=voice&platform=windows" style={{justifyContent:"center"}}>Download Free</a>
+            <div className="note">No sign-up required</div>
+          </div>
+          <div className="price feat rv">
+            <div className="badge">Most Popular</div>
+            <div className="pn">Wuwei Voice Pro</div>
+            <div className="pd">Faster response, longer recordings</div>
+            <div className="amt">$9 <span>/ month</span></div>
+            <ul>
+              <li>All Free features</li>
+              <li>Faster response</li>
+              <li>Longer recordings</li>
+              <li>Priority support</li>
+            </ul>
+            <a className="btn btn-p" href="#price" style={{justifyContent:"center"}}>Upgrade Pro</a>
+            <div className="note">Cancel anytime</div>
+          </div>
+          <div className="price rv">
+            <div className="pn">Wuwei Voice Pro Annual</div>
+            <div className="pd">Pay 10, get 12 months</div>
+            <div className="amt">$72 <span>/ year</span></div>
+            <ul>
+              <li>All Pro features</li>
+              <li>Best value</li>
+            </ul>
+            <a className="btn btn-g" href="#price" style={{justifyContent:"center"}}>Choose Annual</a>
+            <div className="note">≈$6/month</div>
+          </div>
+        </div>
+      </div></section>
+
       {/* ——— Final CTA ——— */}
       <section className="sec final"><div className="wrap">
         <h2 className="rv">Your mind moves fast.<br/><span className="spark">Now your words can too.</span></h2>
