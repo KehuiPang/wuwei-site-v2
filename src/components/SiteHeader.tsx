@@ -35,7 +35,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
               {t.nav.pricing}
             </Link>
           </div>
-          <LanguageSwitch to={t.langSwitchTo} label={t.langSwitch} />
+          <LanguageSwitch current={locale} />
           <a
             href="/api/download?platform=windows"
             className="hidden sm:inline-flex px-4 py-1.5 rounded-lg bg-spark text-paper font-medium hover:bg-spark-hover transition"

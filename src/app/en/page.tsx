@@ -120,7 +120,7 @@ export default async function EnHome() {
             <a href="#story">Story</a>
             <a href="#price">Pricing</a>
           </div>
-          <LandLangSwitch to="zh" label="中" />
+          <LandLangSwitch current="en" />
           <a className="nav-cta" href="#price">Download Free</a>
         </div>
       </div></nav>

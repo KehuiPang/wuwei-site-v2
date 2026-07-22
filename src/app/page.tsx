@@ -106,7 +106,7 @@ export default async function Home() {
             <a href="#story">无为·道</a>
             <a href="#price">定价</a>
           </div>
-          <LandLangSwitch to="en" label="EN" />
+          <LandLangSwitch current="zh" />
           <a className="nav-cta" href="#price">免费下载</a>
         </div>
       </div></nav>

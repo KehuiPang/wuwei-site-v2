@@ -82,8 +82,12 @@
   .nav-cta { background: var(--cinnabar); color: #fff !important; padding: 9px 18px; border-radius: 10px; font-size: 14px; box-shadow: 0 6px 20px -6px rgba(192, 95, 60, .55); }
   .nav-cta:hover { background: var(--cinnabar2); }
   .nav-right { display: flex; align-items: center; gap: clamp(18px, 2.6vw, 34px); }
-  .lang-switch { border: 1px solid var(--line2); color: var(--mist); border-radius: 9px; padding: 7px 13px; font-size: 13px; letter-spacing: 1px; cursor: pointer; background: transparent; transition: border-color .16s, color .16s; }
-  .lang-switch:hover { border-color: var(--steel); color: var(--l-paper); }
+  /* 语言切换：「中文 | EN」分段药丸，当前语言月白底玄墨字高亮；与文字链/CTA 视觉区隔 */
+  .lang-switch { display: inline-flex; align-items: center; gap: 1px; border: 1px solid var(--line2); border-radius: 10px; padding: 3px; background: rgba(255, 255, 255, .05); }
+  .lang-switch button { border: 0; background: transparent; color: var(--mist2); border-radius: 7px; padding: 5px 12px; font-size: 13px; letter-spacing: 1px; cursor: pointer; transition: color .16s, background .16s; }
+  .lang-switch button:hover { color: var(--l-paper); }
+  .lang-switch button.on { background: var(--l-paper); color: var(--ink); font-weight: 600; }
+  .lang-switch .lang-sep { color: var(--line-hover); font-size: 12px; padding: 0 1px; user-select: none; }
 
   /* hero */
   .hero { text-align: center; padding-top: clamp(48px, 8vw, 86px); padding-bottom: clamp(40px, 6vw, 60px);
