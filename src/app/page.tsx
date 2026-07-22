@@ -78,7 +78,7 @@ export default async function Home() {
   let releases: Record<string, Release> = {};
   
   try {
-    [plans, releases] = await Promise.all([getPricing("cn"), getLatestReleases()]);
+    [plans, releases] = await Promise.all([getPricing("cn", "wuwei"), getLatestReleases()]);
   } catch (e) {
     console.error("Failed to fetch pricing:", e);
   }

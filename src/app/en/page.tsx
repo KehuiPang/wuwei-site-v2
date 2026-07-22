@@ -99,7 +99,7 @@ function PriceCards({ plans, hasRelease }: { plans: Plan[]; hasRelease: boolean 
 }
 
 export default async function EnHome() {
-  const [plans, releases] = await Promise.all([getPricing("global"), getLatestReleases()]);
+  const [plans, releases] = await Promise.all([getPricing("global", "wuwei"), getLatestReleases()]);
   const hasRelease = Object.keys(releases).length > 0;
 
   return (
