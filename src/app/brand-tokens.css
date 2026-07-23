@@ -39,3 +39,14 @@
   /* —— 字体 —— */
   --font-sans: "Inter", "PingFang SC", "Noto Sans SC", system-ui, sans-serif;
 }
+
+/* ============================================================
+   全站细滚动条（深色 VI 下几乎隐形）
+   ============================================================ */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(244,246,248,0.15); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(244,246,248,0.28); }
+
+/* Firefox */
+* { scrollbar-width: thin; scrollbar-color: rgba(244,246,248,0.15) transparent; }
