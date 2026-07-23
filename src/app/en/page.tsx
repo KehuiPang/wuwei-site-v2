@@ -6,6 +6,7 @@ import { Reveal } from "@/components/Reveal";
 import { HeroDemo } from "@/components/HeroDemo";
 import { HeroChatBox } from "@/components/HeroChatBox";
 import { LandLangSwitch } from "@/components/LandLangSwitch";
+import { AuthButton } from "@/components/AuthButton";
 
 export const revalidate = 60; // ISR：改价/发版后 60s 内自动生效
 
@@ -122,6 +123,7 @@ export default async function EnHome() {
             <a href="#price">Pricing</a>
           </div>
           <LandLangSwitch current="en" />
+          <AuthButton locale="en" />
           <a className="nav-cta" href="#price">Download Free</a>
         </div>
       </div></nav>

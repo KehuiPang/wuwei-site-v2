@@ -3,6 +3,7 @@ import Link from "next/link";
 import { PRODUCTS, uiText, type Locale } from "@/lib/site";
 import { CircleMark } from "./ui";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { AuthButton } from "./AuthButton";
 
 export function SiteHeader({ locale }: { locale: Locale }) {
   const t = uiText(locale);
@@ -36,6 +37,7 @@ export function SiteHeader({ locale }: { locale: Locale }) {
             </Link>
           </div>
           <LanguageSwitch current={locale} />
+          <AuthButton locale={locale === "zh" ? "zh" : "en"} />
           <a
             href="/api/download?platform=windows"
             className="hidden sm:inline-flex px-4 py-1.5 rounded-lg bg-spark text-paper font-medium hover:bg-spark-hover transition"

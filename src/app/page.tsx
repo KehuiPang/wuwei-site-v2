@@ -7,6 +7,7 @@ import { Reveal } from "@/components/Reveal";
 import { HeroDemo } from "@/components/HeroDemo";
 import { HeroChatBox } from "@/components/HeroChatBox";
 import { LandLangSwitch } from "@/components/LandLangSwitch";
+import { AuthButton } from "@/components/AuthButton";
 
 export const revalidate = 60;
 
@@ -108,6 +109,7 @@ export default async function Home() {
             <a href="#price">定价</a>
           </div>
           <LandLangSwitch current="zh" />
+          <AuthButton locale="zh" />
           <a className="nav-cta" href="#price">免费下载</a>
         </div>
       </div></nav>
