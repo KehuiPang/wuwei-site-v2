@@ -88,25 +88,12 @@ export function LanguageSwitch({ current }: { current: Locale }) {
     <div ref={ref} className="relative">
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-sm text-inkmute hover:text-water hover:bg-surface transition"
+        className="flex items-center justify-center w-9 h-9 rounded-lg text-[#A8B0B8] hover:text-[#F4F6F8] hover:bg-[#1E242C] transition"
         aria-label="选择语言 / Select language"
         aria-expanded={open}
         aria-haspopup="listbox"
       >
         <GlobeIcon className="w-[18px] h-[18px]" />
-        <span className="hidden sm:inline text-xs">{currentLang?.nativeName ?? "EN"}</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`w-3 h-3 transition-transform ${open ? "rotate-180" : ""}`}
-          aria-hidden
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
       </button>
 
       {open && (

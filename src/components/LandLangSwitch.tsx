@@ -91,19 +91,6 @@ export function LandLangSwitch({ current }: { current: Locale }) {
         aria-haspopup="listbox"
       >
         <GlobeIcon className="land-lang-globe" />
-        <span className="land-lang-current">{currentLang?.nativeName ?? "EN"}</span>
-        <svg
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth={2}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          className={`land-lang-chevron ${open ? "open" : ""}`}
-          aria-hidden
-        >
-          <polyline points="6 9 12 15 18 9" />
-        </svg>
       </button>
 
       {open && (

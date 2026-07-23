@@ -94,8 +94,8 @@
 
 /* 🌐 语言切换：地球图标 + 下拉多语言菜单（深色版） */
 .wu-land .land-lang-wrap { position: relative; }
-.wu-land .land-lang-btn { display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--line2); border-radius: 10px; padding: 6px 12px; background: rgba(255, 255, 255, .05); color: var(--mist2); font-size: 13px; cursor: pointer; transition: color .16s, border-color .16s; }
-.wu-land .land-lang-btn:hover { color: var(--l-paper); border-color: var(--line-hover); }
+.wu-land .land-lang-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: none; border-radius: 8px; padding: 0; background: transparent; color: var(--mist2); cursor: pointer; transition: color .16s, background .16s; }
+.wu-land .land-lang-btn:hover { color: var(--l-paper); background: rgba(255, 255, 255, .06); }
 .wu-land .land-lang-globe { width: 18px; height: 18px; }
 .wu-land .land-lang-current { font-size: 12px; }
 .wu-land .land-lang-chevron { width: 12px; height: 12px; transition: transform .2s; }
