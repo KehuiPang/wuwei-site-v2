@@ -1,5 +1,6 @@
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { getDashboard } from "@/lib/analytics";
+import { getAdmin } from "@/lib/supabase-server";
 
 // 后台统计看板：访问/下载/激活/登录 数据汇总
 export const dynamic = "force-dynamic";
@@ -10,10 +11,18 @@ export const metadata = {
 };
 
 export default async function AnalyticsPage() {
-  // 最简访问保护：通过 ADMIN_ACCESS_KEY 校验（与主题控制一致）
-  const expected = process.env.ADMIN_ACCESS_KEY ?? "";
-  // 实际环境中通过 query param 或 header 校验，这里简化处理
-  // 生产环境应使用中间件或 Server Action 校验
+  // 服务端鉴权（fail-closed）：未登录 → 跳登录页；登录但不在 admin_users 白名单 → 404
+  const admin = await getAdmin();
+  if (!admin) {
+    // 区分未登录 vs 非白名单：未登录跳登录页，非白名单 404（不暴露后台存在）
+    const { supabaseServer } = await import("@/lib/supabase-server");
+    const sb = await supabaseServer();
+    const {
+      data: { user },
+    } = await sb.auth.getUser();
+    if (!user) redirect("/admin/login");
+    notFound();
+  }
 
   let dashboard;
   try {

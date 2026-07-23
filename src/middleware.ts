@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@supabase/ssr";
 import { LANG_COOKIE } from "@/lib/site";
 
 // 中英地理分流（方案 §2.3）：
@@ -12,7 +13,59 @@ import { LANG_COOKIE } from "@/lib/site";
 const BOT_UA =
   /bot|crawler|spider|slurp|bingpreview|googlebot|baiduspider|yandex|duckduckbot|facebookexternalhit|embedly|quora|pinterest|slackbot|twitterbot|whatsapp|telegrambot|discordbot|applebot|ia_archiver|semrush|ahrefs|mj12bot|lighthouse|headlesschrome/i;
 
-export function middleware(req: NextRequest) {
+// —— /admin/* 服务端鉴权（安全红线，2026-07-26）——
+// 第一道门：middleware 拦截所有 /admin/*（除 /admin/login），未登录一律 302 跳登录页。
+// 第二道门：各 admin 页内 getAdmin()/role 校验（白名单/角色），纵深防御。
+// 注意：middleware 只校验"是否登录"（session 存在），白名单校验留给页面内 getAdmin()
+// （middleware 里查库会增加每请求延迟，且 admin_users 查询需要 service key）。
+async function guardAdmin(req: NextRequest): Promise<NextResponse | null> {
+  const { pathname } = req.nextUrl;
+
+  // 登录页本身放行（否则死循环）
+  if (pathname === "/admin/login") return null;
+
+  // 校验 Supabase session cookie
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return req.cookies.getAll();
+        },
+        setAll() {
+          // middleware 里不写 cookie（token 刷新由页面内 server client 处理）
+        },
+      },
+    }
+  );
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    // 未登录 → 302 跳登录页，带 next 参数登录后跳回
+    const loginUrl = new URL("/admin/login", req.url);
+    loginUrl.searchParams.set("next", pathname);
+    return NextResponse.redirect(loginUrl);
+  }
+
+  // 已登录 → 放行（白名单/role 校验由页面内 getAdmin() 兜底）
+  return null;
+}
+
+export async function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl;
+
+  // /admin/* 先过鉴权门
+  if (pathname.startsWith("/admin")) {
+    const blocked = await guardAdmin(req);
+    if (blocked) return blocked;
+    return NextResponse.next();
+  }
+
+  // —— 以下为根路径 "/" 的中英地理分流 ——
   const ua = req.headers.get("user-agent") || "";
   if (BOT_UA.test(ua)) return NextResponse.next();
 
@@ -38,7 +91,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// 只拦根路径，成本最低，也避免误伤静态资源/子页面。
+// matcher：根路径分流 + /admin/* 鉴权
 export const config = {
-  matcher: ["/"],
+  matcher: ["/", "/admin/:path*"],
 };
