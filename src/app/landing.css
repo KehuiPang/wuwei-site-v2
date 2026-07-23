@@ -108,25 +108,25 @@
 .wu-land .land-lang-check { width: 16px; height: 16px; color: var(--cinnabar); flex-shrink: 0; }
 
 /* hero */
-.wu-land .hero { text-align: center; padding-top: clamp(48px, 8vw, 86px); padding-bottom: clamp(40px, 6vw, 60px);
+.wu-land .hero { text-align: center; padding-top: clamp(4px, 1vw, 8px); padding-bottom: clamp(40px, 6vw, 60px);
   background: radial-gradient(1100px 620px at 50% 8%, var(--hero-glow) 0%, rgba(20, 23, 28, 0) 60%); }
-.wu-land .hero .logo { width: clamp(84px, 13vw, 124px); height: clamp(84px, 13vw, 124px); filter: drop-shadow(0 10px 34px rgba(0, 0, 0, .5)); }
-.wu-land .hero h1 { font-size: clamp(38px, 8vw, 72px); font-weight: 600; letter-spacing: clamp(3px, 1.3vw, 10px); margin-top: clamp(18px, 3vw, 30px); line-height: 1.2;
+.wu-land .hero .logo { width: clamp(64px, 10vw, 96px); height: clamp(64px, 10vw, 96px); filter: drop-shadow(0 10px 34px rgba(0, 0, 0, .5)); }
+.wu-land .hero h1 { font-size: clamp(38px, 8vw, 72px); font-weight: 600; letter-spacing: clamp(3px, 1.3vw, 10px); margin-top: clamp(4px, 0.8vw, 8px); line-height: 1.2;
   background: linear-gradient(92deg, var(--h1-grad-a), var(--h1-grad-b)); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
 .wu-land .hero h1 .spark { color: var(--cinnabar); -webkit-text-fill-color: var(--cinnabar); }
-.wu-land .hero .en { font-size: clamp(12px, 2.3vw, 16px); letter-spacing: clamp(3px, 1vw, 6px); color: var(--steel); margin-top: 14px; font-weight: 300; }
-.wu-land .hero .vp { font-size: clamp(17px, 3vw, 22px); color: var(--l-paper); margin-top: clamp(22px, 3vw, 32px); line-height: 1.7; max-width: 660px; margin-left: auto; margin-right: auto; font-weight: 400; }
+.wu-land .hero .en { font-size: clamp(12px, 2.3vw, 16px); letter-spacing: clamp(3px, 1vw, 6px); color: var(--steel); margin-top: 8px; font-weight: 300; }
+.wu-land .hero .vp { font-size: clamp(17px, 3vw, 22px); color: var(--l-paper); margin-top: clamp(12px, 2vw, 18px); line-height: 1.7; max-width: 660px; margin-left: auto; margin-right: auto; font-weight: 400; }
 .wu-land .hero .vp b { font-weight: 600; }
 .wu-land .hero .vp .dim { color: var(--mist2); }
-.wu-land .claims { display: flex; flex-wrap: wrap; gap: 10px 12px; justify-content: center; margin-top: clamp(22px, 3vw, 30px); }
+.wu-land .claims { display: flex; flex-wrap: wrap; gap: 10px 12px; justify-content: center; margin-top: clamp(12px, 2vw, 18px); }
 .wu-land .claim { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--spark-line); background: var(--spark-soft);
   border-radius: 999px; padding: 9px 18px; font-size: clamp(14px, 2.2vw, 16px); font-weight: 600; letter-spacing: 1px; color: var(--l-paper); }
 .wu-land .claim::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--cinnabar); box-shadow: 0 0 8px 1px rgba(192, 95, 60, .65); }
-.wu-land .hero .btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: clamp(28px, 4vw, 38px); }
-.wu-land .hero .plat { margin-top: 16px; color: var(--mute); font-size: 13px; letter-spacing: 1px; }
+.wu-land .hero .btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: clamp(16px, 2.5vw, 24px); }
+.wu-land .hero .plat { margin-top: 10px; margin-bottom: clamp(14px, 2vw, 22px); color: var(--mute); font-size: 13px; letter-spacing: 1px; }
 
 /* —— hero 对话输入框（视觉+交互 demo，不连后端）—— */
-.wu-land .hero-chat { max-width: 680px; margin: clamp(26px, 4vw, 36px) auto 0; }
+.wu-land .hero-chat { max-width: 680px; margin: clamp(14px, 2.5vw, 22px) auto 0; }
 .wu-land .hc-box { display: flex; align-items: flex-end; gap: 10px; background: rgba(22, 26, 32, .72);
   border: 1px solid var(--indigo); border-radius: 18px; padding: 14px 14px 14px 20px;
   transition: border-color .2s, box-shadow .2s; }
@@ -170,7 +170,7 @@
 .wu-land .hc-modal-cta { width: 100%; justify-content: center; text-align: center; }
 
 /* trust */
-.wu-land .trust { margin-top: clamp(30px, 4vw, 44px); }
+.wu-land .trust { margin-top: clamp(18px, 3vw, 28px); }
 .wu-land .trust .tt { color: var(--mute2); font-size: 12px; letter-spacing: 3px; margin-bottom: 14px; }
 .wu-land .trust .logos { display: flex; flex-wrap: wrap; gap: 10px 12px; justify-content: center; max-width: 760px; margin: 0 auto; }
 .wu-land .chip { border: 1px solid var(--line2); border-radius: 999px; padding: 7px 15px; color: var(--mist); font-size: 13px; letter-spacing: .5px; background: var(--surface); }
@@ -213,7 +213,7 @@
 .wu-land .ftext li::before { content: ""; position: absolute; left: 0; top: 8px; width: 8px; height: 8px; border-radius: 50%; background: var(--cinnabar); box-shadow: 0 0 10px 1px rgba(192, 95, 60, .5); }
 
 /* mock window —— 两套主题都固定深色（终端/产品截图观感）*/
-.wu-land .mock { background: #0F1216; border: 1px solid #2C343E; border-radius: 16px; overflow: hidden; box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .8); }
+.wu-land .mock { background: #0F1216; border: 1px solid #2C343E; border-radius: 16px; overflow: hidden; box-shadow: 0 30px 70px -30px rgba(0, 0, 0, .8); margin-top: clamp(20px, 3vw, 32px); }
 .wu-land .mock .bar { display: flex; align-items: center; gap: 7px; padding: 12px 15px; background: #151A20; border-bottom: 1px solid #242B34; }
 .wu-land .mock .bar i { width: 11px; height: 11px; border-radius: 50%; display: block; }
 .wu-land .mock .bar .t { margin-left: 12px; color: #5f6870; font-size: 12px; letter-spacing: 1px; }
