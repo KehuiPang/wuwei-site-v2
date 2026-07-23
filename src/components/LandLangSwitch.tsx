@@ -1,8 +1,8 @@
 "use client";
 // 🌐 地球图标 + 下拉多语言菜单（深色落地页版）。
 // 参考 Raphael AI 样式：竖排语言列表、原生名、当前语言高亮、可滚动。
-// 写 cookie 记住选择；zh→/，en→/en，其余语言本期先跳 /en 兜底。
-import { useRouter } from "next/navigation";
+// 写 cookie 记住选择；切换语言时保持当前页面路径，只换 locale 前缀。
+import { useRouter, usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { LANG_COOKIE, LANGUAGES, ACTIVE_LOCALES, type Locale } from "@/lib/site";
 
@@ -44,6 +44,7 @@ function CheckIcon({ className }: { className?: string }) {
 
 export function LandLangSwitch({ current }: { current: Locale }) {
   const router = useRouter();
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
 
@@ -65,18 +66,33 @@ export function LandLangSwitch({ current }: { current: Locale }) {
     return () => document.removeEventListener("keydown", handler);
   }, [open]);
 
+  // 路径映射：切换语言时保持当前页面路径，只换 locale 前缀
+  // /voice ↔ /en/voice，/shot ↔ /en/shot，/ ↔ /en
+  // 带 hash/子路径也保持（如 /voice#how → /en/voice#how）
+  const localizedPath = useCallback(
+    (to: Locale, currentPath: string): string => {
+      // 先去掉当前路径的 /en 前缀（如果有），得到"裸路径"
+      const bare = currentPath.startsWith("/en")
+        ? currentPath.slice(3) || "/"  // "/en" → "/"，"/en/voice" → "/voice"
+        : currentPath;
+
+      if (to === "zh") return bare;
+      // 非 zh（本期一律 en 兜底）
+      return bare === "/" ? "/en" : `/en${bare}`;
+    },
+    [],
+  );
+
   const go = useCallback(
     (to: Locale) => {
       setOpen(false);
       if (to === current) return;
       document.cookie = `${LANG_COOKIE}=${to}; path=/; max-age=31536000; samesite=lax`;
-      if (to === "zh") {
-        router.push("/");
-      } else {
-        router.push("/en");
-      }
+      // 保持当前页面路径（含 hash），只换 locale 前缀
+      const hash = typeof window !== "undefined" ? window.location.hash : "";
+      router.push(localizedPath(to, pathname) + hash);
     },
-    [current, router],
+    [current, router, pathname, localizedPath],
   );
 
   const currentLang = LANGUAGES.find((l) => l.code === current);
