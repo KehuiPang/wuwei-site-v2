@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import "./landing.css";
-import { getPricing, getLatestReleases, type Plan, type Release } from "@/lib/data";
-import { FALLBACK_PLANS_CN } from "@/lib/fallback-pricing";
+import { getLatestReleases, type Release } from "@/lib/data";
 import { Track } from "@/components/Track";
 import { Reveal } from "@/components/Reveal";
 import { HeroDemo } from "@/components/HeroDemo";
@@ -35,58 +34,13 @@ function WuMark({ className, stroke = 12, dot = 10 }: { className?: string; stro
   );
 }
 
-const PLAN_COPY: Record<string, { pd: string; note: string }> = {
-  free: { pd: "开箱即用，体验无为的全部核心能力", note: "无需注册，下载即用" },
-  pro: { pd: "托管额度 + 增强能力，省去自配 key 的麻烦", note: "随时可升级 / 取消" },
-  annual: { pd: "按年付更划算，长期用无为的省心之选", note: "付 10 月送 2 月" },
-};
-
-function symbolOf(currency: string) { return currency === "USD" ? "$" : currency === "CNY" ? "¥" : ""; }
-function periodOf(period: string) { return period === "year" ? " / 年" : period === "month" ? " / 月" : ""; }
-
-function PriceCards({ plans, hasRelease }: { plans: Plan[]; hasRelease: boolean }) {
-  return (
-    <div className="prices">
-      {plans.map((p) => {
-        const feat = p.plan_key === "pro";
-        const copy = PLAN_COPY[p.plan_key] ?? { pd: "", note: "" };
-        const sym = symbolOf(p.currency);
-        const per = p.price > 0 ? periodOf(p.period) : "";
-        return (
-          <div key={p.plan_key} className={"price rv" + (feat ? " feat" : "")}>
-            {feat && <div className="badge">最受欢迎</div>}
-            <div className="pn">{p.name}</div>
-            <div className="pd">{copy.pd}</div>
-            <div className="amt">{sym}{p.price}{per && <span>{per}</span>}</div>
-            <ul>{(p.features ?? []).map((f, i) => <li key={i}>{f}</li>)}</ul>
-            {p.plan_key === "free" ? (
-              hasRelease ? <a className="btn btn-g" href="/api/download?platform=windows">免费下载</a>
-              : <span className="btn btn-g btn-disabled">即将上线</span>
-            ) : (
-              <a className={"btn " + (feat ? "btn-p" : "btn-g")} href="#price">{feat ? "升级 Pro" : "选择年付"}</a>
-            )}
-            <div className="note">{copy.note}</div>
-          </div>
-        );
-      })}
-      {plans.length === 0 && <p style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--mist2)" }}>定价加载中…</p>}
-    </div>
-  );
-}
-
 export default async function Home() {
-  let plans: Plan[] = [];
   let releases: Record<string, Release> = {};
   
   try {
-    [plans, releases] = await Promise.all([getPricing("cn", "wuwei"), getLatestReleases()]);
+    releases = await getLatestReleases();
   } catch (e) {
-    console.error("Failed to fetch pricing:", e);
-  }
-  
-  // fallback: 如果数据库没返回，用静态数据
-  if (!plans || plans.length === 0) {
-    plans = FALLBACK_PLANS_CN as Plan[];
+    console.error("Failed to fetch releases:", e);
   }
   
   const hasRelease = Object.keys(releases).length > 0;
@@ -291,19 +245,11 @@ export default async function Home() {
         </div>
         <div className="sig rv">— 无为 · 让每个人都能「无为而无不为」</div>
       </div></section>
-      <section className="sec tint" id="price"><div className="wrap">
-        <div className="sec-head rv">
-          <div className="eyebrow">Pricing</div>
-          <div className="h2">免费开始，<span className="zhu">用顺了再说</span></div>
-          <p className="lead">下载即用，先免费体验它怎么替你干活。用出感觉、额度不够了，再登录升级——一步都不勉强。</p>
-        </div>
-        <PriceCards plans={plans} hasRelease={hasRelease} />
-      </div></section>
       <section className="sec final"><div className="wrap">
         <h2 className="rv">一念既出，<span className="spark">万事自成</span>。</h2>
         <p className="rv">把执行交出去，把时间还给自己。现在就开始，免费。</p>
         <div className="btns rv">
-          <a className="btn btn-p" href="#price">▼ 免费下载无为</a>
+          <a className="btn btn-p" href="/api/download?platform=windows">▼ 免费下载无为</a>
           <a className="btn btn-g" href="#how">看它如何工作</a>
         </div>
         <div className="plat">macOS · Windows · Linux　|　自带 key，开箱即用</div>
@@ -315,7 +261,7 @@ export default async function Home() {
             <a href="#feature">功能</a>
             <a href="#how">怎么用</a>
             <a href="#story">无为·道</a>
-            <a href="#price">定价</a>
+            <a href="/pricing">定价</a>
             <a href="#download">下载</a>
           </div>
         </div>

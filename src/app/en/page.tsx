@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "../landing.css";
-import { getPricing, getLatestReleases, type Plan } from "@/lib/data";
+import { getLatestReleases } from "@/lib/data";
 import { Track } from "@/components/Track";
 import { Reveal } from "@/components/Reveal";
 import { HeroDemo } from "@/components/HeroDemo";
@@ -42,65 +42,8 @@ function WuMark({ className, stroke = 12, dot = 10 }: { className?: string; stro
   );
 }
 
-const PLAN_COPY: Record<string, { pd: string; note: string }> = {
-  free: { pd: "Everything you need, right out of the box.", note: "No sign-up. Download and go." },
-  pro: { pd: "Hosted credits + more power — skip bringing your own key.", note: "Upgrade or cancel anytime." },
-  annual: { pd: "Pay yearly, save more — the no-fuss choice for regulars.", note: "Pay 10 months, get 2 free." },
-};
-
-function symbolOf(currency: string) {
-  return currency === "USD" ? "$" : currency === "CNY" ? "¥" : "";
-}
-function periodOf(period: string) {
-  return period === "year" ? " / yr" : period === "month" ? " / mo" : "";
-}
-
-function PriceCards({ plans, hasRelease }: { plans: Plan[]; hasRelease: boolean }) {
-  return (
-    <div className="prices">
-      {plans.map((p) => {
-        const feat = p.plan_key === "pro";
-        const copy = PLAN_COPY[p.plan_key] ?? { pd: "", note: "" };
-        const sym = symbolOf(p.currency);
-        const per = p.price > 0 ? periodOf(p.period) : "";
-        return (
-          <div key={p.plan_key} className={"price rv" + (feat ? " feat" : "")}>
-            {feat && <div className="badge">MOST POPULAR</div>}
-            <div className="pn">{p.name}</div>
-            <div className="pd">{copy.pd}</div>
-            <div className="amt">
-              {sym}{p.price}
-              {per && <span>{per}</span>}
-            </div>
-            <ul>
-              {(p.features ?? []).map((f, i) => (
-                <li key={i}>{f}</li>
-              ))}
-            </ul>
-            {p.plan_key === "free" ? (
-              hasRelease ? (
-                <a className="btn btn-g" href="/api/download?platform=windows">Download Free</a>
-              ) : (
-                <span className="btn btn-g btn-disabled">Coming soon</span>
-              )
-            ) : (
-              <a className={"btn " + (feat ? "btn-p" : "btn-g")} href="#price">
-                {feat ? "Upgrade to Pro" : "Choose annual"}
-              </a>
-            )}
-            <div className="note">{copy.note}</div>
-          </div>
-        );
-      })}
-      {plans.length === 0 && (
-        <p style={{ gridColumn: "1/-1", textAlign: "center", color: "var(--mist2)" }}>Loading pricing…</p>
-      )}
-    </div>
-  );
-}
-
 export default async function EnHome() {
-  const [plans, releases] = await Promise.all([getPricing("global", "wuwei"), getLatestReleases()]);
+  const releases = await getLatestReleases();
   const hasRelease = Object.keys(releases).length > 0;
 
   return (
@@ -333,22 +276,12 @@ export default async function EnHome() {
         <div className="sig rv">— Wuwei · so everyone can "do nothing, yet leave nothing undone"</div>
       </div></section>
 
-      {/* PRICING（Supabase pricing_plans · region=global · ISR 60s） */}
-      <section className="sec tint" id="price"><div className="wrap">
-        <div className="sec-head rv">
-          <div className="eyebrow">Pricing</div>
-          <div className="h2">Start free, <span className="zhu">decide later</span></div>
-          <p className="lead">Download and use — feel how it works for you first, free. When you're hooked and need more, sign in and upgrade. Never forced.</p>
-        </div>
-        <PriceCards plans={plans} hasRelease={hasRelease} />
-      </div></section>
-
       {/* FINAL CTA */}
       <section className="sec final"><div className="wrap">
         <h2 className="rv">One intention. <span className="spark">Everything done.</span></h2>
         <p className="rv">Hand off execution, get your time back. Start now — free.</p>
         <div className="btns rv">
-          <a className="btn btn-p" href="#price">▼ Download Wuwei — Free</a>
+          <a className="btn btn-p" href="/api/download?platform=windows">▼ Download Wuwei — Free</a>
           <a className="btn btn-g" href="#how">See how it works</a>
         </div>
         <div className="plat">macOS · Windows · Linux &nbsp;|&nbsp; Bring your own key, ready out of the box</div>
@@ -365,7 +298,7 @@ export default async function EnHome() {
             <a href="#feature">Features</a>
             <a href="#how">How</a>
             <a href="#story">Story</a>
-            <a href="#price">Pricing</a>
+            <a href="/en/pricing">Pricing</a>
             <a href="#download">Download</a>
           </div>
         </div>

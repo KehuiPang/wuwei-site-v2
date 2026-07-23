@@ -26,3 +26,31 @@ export const FALLBACK_PLANS_CN = [
     features: ["≈¥24/月", "付10月送2月"],
   },
 ];
+
+export const FALLBACK_PLANS_EN = [
+  {
+    plan_key: "free",
+    name: "Free",
+    price: 0,
+    currency: "USD",
+    period: "month",
+    features: ["All core features", "Bring your own key", "Free forever"],
+  },
+  {
+    plan_key: "pro",
+    name: "Wuwei Pro",
+    price: 4.99,
+    currency: "USD",
+    period: "month",
+    features: ["Hosted credits", "Longer context", "Higher concurrency"],
+    badge: "Most popular",
+  },
+  {
+    plan_key: "annual",
+    name: "Wuwei Pro Annual",
+    price: 49,
+    currency: "USD",
+    period: "year",
+    features: ["≈$4.08/mo", "Pay 10 months, get 2 free"],
+  },
+];

@@ -46,7 +46,7 @@ export function LandNav({ locale, productPage }: LandNavProps) {
     : [
         { href: "/shot", label: isEn ? "Shot" : "无为截" },
         { href: "/voice", label: isEn ? "Voice" : "无为念" },
-        { href: "#pricing", label: isEn ? "Pricing" : "定价" },
+        { href: isEn ? "/en/pricing" : "/pricing", label: isEn ? "Pricing" : "定价" },
       ];
 
   return (
