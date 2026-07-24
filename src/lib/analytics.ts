@@ -8,9 +8,13 @@ export type DailyStat = { day: string; pv: number; uv: number; downloads: number
 export type Bar = { key: string; count: number };
 
 export type Dashboard = {
-  totals: { pv: number; uv: number; downloads: number; logins: number };
+  totals: { pv: number; uv: number; downloads: number; logins: number; activations: number; usageEvents: number };
   daily: DailyStat[]; // 近 N 天 pv/uv/下载
   loginsByDay: Bar[]; // 近 N 天客户端登录
+  activationsByDay: Bar[]; // 近 N 天客户端激活
+  usageByDay: Bar[]; // 近 N 天客户端使用事件
+  downloadToActivateRate: number; // 下载→激活转化率 (0-100)
+  dau: number; // 今日活跃客户端（去重 anon_id）
   topReferers: Bar[];
   topCountries: Bar[];
   topLanding: Bar[];
@@ -43,8 +47,11 @@ function dayKey(iso: string): string {
 export async function getDashboard(windowDays = 30): Promise<Dashboard> {
   const sb = supabaseAdmin();
   const since = new Date(Date.now() - windowDays * 86400_000).toISOString();
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const todayISO = todayStart.toISOString();
 
-  const [dailyRes, evRes, loginRes] = await Promise.all([
+  const [dailyRes, evRes, loginRes, activateRes, usageRes, dauRes] = await Promise.all([
     sb.from("v_daily_stats").select("day,pv,uv,downloads").limit(windowDays),
     sb
       .from("analytics_events")
@@ -59,6 +66,28 @@ export async function getDashboard(windowDays = 30): Promise<Dashboard> {
       .gte("created_at", since)
       .order("created_at", { ascending: false })
       .limit(10000),
+    // 客户端激活事件（analytics_events 表）
+    sb
+      .from("analytics_events")
+      .select("anon_id,created_at")
+      .eq("event_type", "client_activate")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(10000),
+    // 客户端使用事件（analytics_events 表）
+    sb
+      .from("analytics_events")
+      .select("anon_id,created_at")
+      .eq("event_type", "client_usage")
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(10000),
+    // 今日 DAU：client_events 表今日有任意事件的匿名 ID 去重
+    sb
+      .from("client_events")
+      .select("anon_id")
+      .gte("created_at", todayISO)
+      .limit(5000),
   ]);
 
   const daily: DailyStat[] = (dailyRes.data ?? []).map((d) => ({
@@ -100,13 +129,48 @@ export async function getDashboard(windowDays = 30): Promise<Dashboard> {
     versions.set(v, (versions.get(v) || 0) + 1);
   }
 
+  // —— 客户端激活聚合 ——
+  const activations = activateRes.data ?? [];
+  const activationDay = new Map<string, number>();
+  for (const a of activations) {
+    const d = dayKey(String(a.created_at));
+    activationDay.set(d, (activationDay.get(d) || 0) + 1);
+  }
+
+  // —— 客户端使用聚合 ——
+  const usageEvents = usageRes.data ?? [];
+  const usageDay = new Map<string, number>();
+  for (const u of usageEvents) {
+    const d = dayKey(String(u.created_at));
+    usageDay.set(d, (usageDay.get(d) || 0) + 1);
+  }
+
+  // —— 下载→激活转化率 ——
+  const downloadToActivateRate = downloads > 0 ? Math.round((activations.length / downloads) * 1000) / 10 : 0;
+
+  // —— 今日 DAU ——
+  const dauSet = new Set<string>();
+  for (const r of dauRes.data ?? []) {
+    if (r.anon_id) dauSet.add(r.anon_id);
+  }
+
   return {
-    totals: { pv, uv: pvUsers.size, downloads, logins: logins.length },
+    totals: { pv, uv: pvUsers.size, downloads, logins: logins.length, activations: activations.length, usageEvents: usageEvents.length },
     daily,
     loginsByDay: [...loginDay.entries()]
       .map(([key, count]) => ({ key, count }))
       .sort((a, b) => (a.key < b.key ? 1 : -1))
       .slice(0, windowDays),
+    activationsByDay: [...activationDay.entries()]
+      .map(([key, count]) => ({ key, count }))
+      .sort((a, b) => (a.key < b.key ? 1 : -1))
+      .slice(0, windowDays),
+    usageByDay: [...usageDay.entries()]
+      .map(([key, count]) => ({ key, count }))
+      .sort((a, b) => (a.key < b.key ? 1 : -1))
+      .slice(0, windowDays),
+    downloadToActivateRate,
+    dau: dauSet.size,
     topReferers: topN(refs, 8),
     topCountries: topN(countries, 8),
     topLanding: topN(landing, 8),

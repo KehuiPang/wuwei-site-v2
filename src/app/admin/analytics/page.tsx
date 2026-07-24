@@ -2,8 +2,9 @@ import { notFound, redirect } from "next/navigation";
 import { getDashboard } from "@/lib/analytics";
 import { getAdmin } from "@/lib/supabase-server";
 import { AdminTopBar } from "./components/AdminTopBar";
+import { PvDownloadChart, SingleTrendChart } from "./components/TrendCharts";
 
-// 后台统计看板：访问/下载/激活/登录 数据汇总
+// 后台统计看板：访问/下载/激活/使用/登录 数据汇总
 export const dynamic = "force-dynamic";
 
 export const metadata = {
@@ -47,12 +48,19 @@ export default async function AnalyticsPage() {
     );
   }
 
-  const { totals, daily, loginsByDay, topReferers, topCountries, topLanding, clientVersions } = dashboard;
-
-  // 计算趋势图最大值（用于归一化柱高）
-  const maxPv = Math.max(...daily.map((d) => d.pv), 1);
-  const maxDl = Math.max(...daily.map((d) => d.downloads), 1);
-  const maxLogin = Math.max(...loginsByDay.map((d) => d.count), 1);
+  const {
+    totals,
+    daily,
+    loginsByDay,
+    activationsByDay,
+    usageByDay,
+    downloadToActivateRate,
+    dau,
+    topReferers,
+    topCountries,
+    topLanding,
+    clientVersions,
+  } = dashboard;
 
   return (
     <div style={s.page}>
@@ -60,89 +68,101 @@ export default async function AnalyticsPage() {
       <AdminTopBar title="无为 · 数据后台" subtitle={`近 ${dashboard.windowDays} 天数据`} />
 
       <div style={s.container}>
-        {/* —— 4 列核心指标卡 —— */}
+        {/* —— 6 列核心指标卡 —— */}
         <div style={s.statsGrid}>
           <StatCard label="页面访问 PV" value={totals.pv} icon="👁" accent="var(--adm-indigo)" />
           <StatCard label="独立访客 UV" value={totals.uv} icon="👤" accent="var(--adm-bamboo)" />
           <StatCard label="下载次数" value={totals.downloads} icon="⬇" accent="var(--adm-spark)" />
-          <StatCard label="客户端登录" value={totals.logins} icon="🔑" accent="var(--adm-gold)" />
+          <StatCard label="客户端激活" value={totals.activations} icon="⚡" accent="var(--adm-gold)" />
+          <StatCard label="今日活跃客户端" value={dau} icon="📱" accent="var(--adm-cyan)" />
+          <StatCard label="客户端登录" value={totals.logins} icon="🔑" accent="var(--adm-purple)" />
         </div>
 
-        {/* —— 趋势图表区（并排） —— */}
-        <div style={s.chartsRow}>
-          {/* 每日访问/下载趋势 */}
-          <div style={{ ...s.panel, flex: 2 }}>
-            <div style={s.panelHeader}>
-              <span style={s.panelTitle}>📈 每日访问 / 下载趋势</span>
-              <div style={s.legend}>
-                <span style={s.legendItem}>
-                  <span style={{ ...s.legendDot, background: "var(--adm-indigo)" }} /> PV
-                </span>
-                <span style={s.legendItem}>
-                  <span style={{ ...s.legendDot, background: "var(--adm-spark)" }} /> 下载
-                </span>
+        {/* —— 下载→激活转化率 —— */}
+        <div style={s.conversionPanel}>
+          <div style={s.conversionLeft}>
+            <span style={{ fontSize: 28 }}>🔄</span>
+            <div>
+              <div style={{ fontSize: 13, color: "var(--adm-dim)" }}>下载 → 激活转化率</div>
+              <div
+                style={{
+                  fontSize: 32,
+                  fontWeight: 700,
+                  color: downloadToActivateRate > 0 ? "var(--adm-gold)" : "var(--adm-dim)",
+                  fontVariantNumeric: "tabular-nums",
+                }}
+              >
+                {downloadToActivateRate > 0 ? `${downloadToActivateRate}%` : "—"}
               </div>
             </div>
-            {daily.length === 0 ? (
-              <Empty />
+          </div>
+          <div style={s.conversionRight}>
+            <div style={s.conversionStat}>
+              <span style={s.conversionNum}>{totals.downloads.toLocaleString()}</span>
+              <span style={s.conversionLabel}>下载</span>
+            </div>
+            <span style={{ color: "var(--adm-dim)", fontSize: 20 }}>→</span>
+            <div style={s.conversionStat}>
+              <span style={{ ...s.conversionNum, color: "var(--adm-gold)" }}>
+                {totals.activations.toLocaleString()}
+              </span>
+              <span style={s.conversionLabel}>激活</span>
+            </div>
+          </div>
+          {totals.activations === 0 && (
+            <div style={{ fontSize: 12, color: "var(--adm-dim)", marginTop: 8, width: "100%" }}>
+              客户端激活上报尚未接入，接入后自动显示数据
+            </div>
+          )}
+        </div>
+
+        {/* —— 每日访问/下载趋势（全宽） —— */}
+        <div style={s.panel}>
+          <div style={s.panelHeader}>
+            <span style={s.panelTitle}>📈 每日访问 / 下载趋势</span>
+          </div>
+          {daily.length === 0 ? (
+            <Empty />
+          ) : (
+            <PvDownloadChart data={daily} />
+          )}
+        </div>
+
+        {/* —— 客户端三维度趋势（三列并排） —— */}
+        <div style={s.chartsRow}>
+          {/* 客户端激活趋势 */}
+          <div style={{ ...s.panel, flex: 1, marginBottom: 0 }}>
+            <div style={s.panelHeader}>
+              <span style={s.panelTitle}>⚡ 客户端激活趋势</span>
+            </div>
+            {activationsByDay.length === 0 ? (
+              <EmptyWithHint hint="客户端激活上报接入后自动显示" />
             ) : (
-              <div style={s.chartWrap}>
-                <div style={s.barChart}>
-                  {daily.map((d) => (
-                    <div key={d.day} style={s.barGroup}>
-                      <div style={s.barPair}>
-                        <div
-                          style={{
-                            ...s.bar,
-                            height: `${Math.max((d.pv / maxPv) * 100, 2)}%`,
-                            background: "var(--adm-indigo)",
-                          }}
-                          title={`${d.day} PV: ${d.pv}`}
-                        />
-                        <div
-                          style={{
-                            ...s.bar,
-                            height: `${Math.max((d.downloads / maxDl) * 100, 2)}%`,
-                            background: "var(--adm-spark)",
-                          }}
-                          title={`${d.day} 下载: ${d.downloads}`}
-                        />
-                      </div>
-                      <div style={s.barLabel}>{d.day.slice(5)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <SingleTrendChart data={activationsByDay} color="#D4A853" label="激活" />
+            )}
+          </div>
+
+          {/* 客户端使用趋势 */}
+          <div style={{ ...s.panel, flex: 1, marginBottom: 0 }}>
+            <div style={s.panelHeader}>
+              <span style={s.panelTitle}>📱 每日客户端使用</span>
+            </div>
+            {usageByDay.length === 0 ? (
+              <EmptyWithHint hint="客户端使用上报接入后自动显示" />
+            ) : (
+              <SingleTrendChart data={usageByDay} color="#4AADA8" label="使用" />
             )}
           </div>
 
           {/* 客户端登录趋势 */}
-          <div style={{ ...s.panel, flex: 1 }}>
+          <div style={{ ...s.panel, flex: 1, marginBottom: 0 }}>
             <div style={s.panelHeader}>
               <span style={s.panelTitle}>🔑 客户端登录趋势</span>
             </div>
             {loginsByDay.length === 0 ? (
-              <Empty />
+              <EmptyWithHint hint="客户端登录上报接入后自动显示" />
             ) : (
-              <div style={s.chartWrap}>
-                <div style={s.barChart}>
-                  {loginsByDay.map((d) => (
-                    <div key={d.key} style={s.barGroup}>
-                      <div style={s.barPair}>
-                        <div
-                          style={{
-                            ...s.bar,
-                            height: `${Math.max((d.count / maxLogin) * 100, 2)}%`,
-                            background: "var(--adm-bamboo)",
-                          }}
-                          title={`${d.key}: ${d.count}`}
-                        />
-                      </div>
-                      <div style={s.barLabel}>{d.key.slice(5)}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <SingleTrendChart data={loginsByDay} color="#8B6FC7" label="登录" />
             )}
           </div>
         </div>
@@ -194,9 +214,18 @@ export default async function AnalyticsPage() {
                 {daily.map((d) => (
                   <tr key={d.day}>
                     <td style={s.td}>{d.day}</td>
-                    <td style={{ ...s.td, textAlign: "right", fontWeight: 600 }}>{d.pv.toLocaleString()}</td>
+                    <td style={{ ...s.td, textAlign: "right", fontWeight: 600 }}>
+                      {d.pv.toLocaleString()}
+                    </td>
                     <td style={{ ...s.td, textAlign: "right" }}>{d.uv.toLocaleString()}</td>
-                    <td style={{ ...s.td, textAlign: "right", color: "var(--adm-spark)", fontWeight: 600 }}>
+                    <td
+                      style={{
+                        ...s.td,
+                        textAlign: "right",
+                        color: "var(--adm-spark)",
+                        fontWeight: 600,
+                      }}
+                    >
                       {d.downloads.toLocaleString()}
                     </td>
                   </tr>
@@ -214,14 +243,32 @@ export default async function AnalyticsPage() {
 // 子组件
 // ============================================================
 
-function StatCard({ label, value, icon, accent }: { label: string; value: number; icon: string; accent: string }) {
+function StatCard({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: number;
+  icon: string;
+  accent: string;
+}) {
   return (
     <div style={s.statCard}>
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <span style={{ fontSize: 20 }}>{icon}</span>
         <span style={{ width: 8, height: 8, borderRadius: "50%", background: accent, opacity: 0.7 }} />
       </div>
-      <div style={{ fontSize: 32, fontWeight: 700, color: "var(--adm-paper)", margin: "12px 0 4px", fontVariantNumeric: "tabular-nums" }}>
+      <div
+        style={{
+          fontSize: 32,
+          fontWeight: 700,
+          color: "var(--adm-paper)",
+          margin: "12px 0 4px",
+          fontVariantNumeric: "tabular-nums",
+        }}
+      >
         {value.toLocaleString()}
       </div>
       <div style={{ fontSize: 13, color: "var(--adm-dim)" }}>{label}</div>
@@ -229,7 +276,15 @@ function StatCard({ label, value, icon, accent }: { label: string; value: number
   );
 }
 
-function DistPanel({ title, items, accent }: { title: string; items: { key: string; count: number }[]; accent: string }) {
+function DistPanel({
+  title,
+  items,
+  accent,
+}: {
+  title: string;
+  items: { key: string; count: number }[];
+  accent: string;
+}) {
   const max = Math.max(...items.map((i) => i.count), 1);
   return (
     <div style={s.panel}>
@@ -267,6 +322,16 @@ function Empty() {
   );
 }
 
+function EmptyWithHint({ hint }: { hint: string }) {
+  return (
+    <div style={{ textAlign: "center", padding: "32px 16px", color: "var(--adm-dim)", fontSize: 13 }}>
+      <div style={{ fontSize: 24, marginBottom: 8, opacity: 0.4 }}>📊</div>
+      <div>暂无数据</div>
+      <div style={{ fontSize: 11, marginTop: 6, opacity: 0.7 }}>{hint}</div>
+    </div>
+  );
+}
+
 // ============================================================
 // Admin 深色 CSS 变量（内联注入，不依赖全局 CSS）
 // ============================================================
@@ -283,6 +348,8 @@ const ADMIN_CSS_VARS = `
     --adm-bamboo: #5C8A73;
     --adm-spark: #C05F3C;
     --adm-gold: #D4A853;
+    --adm-cyan: #4AADA8;
+    --adm-purple: #8B6FC7;
   }
   @media (max-width: 768px) {
     .adm-charts-row { flex-direction: column !important; }
@@ -313,10 +380,10 @@ const s: Record<string, React.CSSProperties> = {
     textAlign: "center" as const,
   },
 
-  // 4 列指标卡
+  // 6 列指标卡
   statsGrid: {
     display: "grid",
-    gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+    gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
     gap: 16,
     marginBottom: 24,
   },
@@ -327,74 +394,52 @@ const s: Record<string, React.CSSProperties> = {
     padding: "20px 20px 16px",
   },
 
+  // 转化率面板
+  conversionPanel: {
+    background: "var(--adm-surface)",
+    border: "1px solid var(--adm-border)",
+    borderRadius: 12,
+    padding: "20px 24px",
+    marginBottom: 24,
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    flexWrap: "wrap" as const,
+    gap: 16,
+  },
+  conversionLeft: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+  },
+  conversionRight: {
+    display: "flex",
+    alignItems: "center",
+    gap: 16,
+  },
+  conversionStat: {
+    display: "flex",
+    flexDirection: "column" as const,
+    alignItems: "center",
+  },
+  conversionNum: {
+    fontSize: 24,
+    fontWeight: 700,
+    color: "var(--adm-paper)",
+    fontVariantNumeric: "tabular-nums",
+  },
+  conversionLabel: {
+    fontSize: 12,
+    color: "var(--adm-dim)",
+    marginTop: 2,
+  },
+
   // 图表区
   chartsRow: {
     display: "flex",
     gap: 16,
     marginBottom: 24,
     flexWrap: "wrap" as const,
-  },
-  chartWrap: {
-    height: 180,
-    display: "flex",
-    alignItems: "flex-end",
-    padding: "0 4px",
-  },
-  barChart: {
-    display: "flex",
-    alignItems: "flex-end",
-    gap: 3,
-    width: "100%",
-    height: "100%",
-  },
-  barGroup: {
-    flex: 1,
-    display: "flex",
-    flexDirection: "column" as const,
-    alignItems: "center",
-    height: "100%",
-    justifyContent: "flex-end",
-    minWidth: 0,
-  },
-  barPair: {
-    display: "flex",
-    gap: 2,
-    alignItems: "flex-end",
-    height: "calc(100% - 20px)",
-    width: "100%",
-    justifyContent: "center",
-  },
-  bar: {
-    width: "45%",
-    minWidth: 3,
-    borderRadius: "3px 3px 0 0",
-    transition: "height 0.3s",
-  },
-  barLabel: {
-    fontSize: 10,
-    color: "var(--adm-dim)",
-    marginTop: 4,
-    whiteSpace: "nowrap" as const,
-    overflow: "hidden",
-    textOverflow: "ellipsis",
-    maxWidth: "100%",
-  },
-  legend: {
-    display: "flex",
-    gap: 12,
-  },
-  legendItem: {
-    display: "flex",
-    alignItems: "center",
-    gap: 4,
-    fontSize: 12,
-    color: "var(--adm-dim)",
-  },
-  legendDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 2,
-    display: "inline-block",
   },
 
   // 分布面板
@@ -472,6 +517,7 @@ const s: Record<string, React.CSSProperties> = {
     borderRadius: 12,
     padding: 20,
     minWidth: 0,
+    marginBottom: 24,
   },
   panelHeader: {
     display: "flex",
