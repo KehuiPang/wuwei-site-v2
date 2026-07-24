@@ -4,7 +4,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-// 隐私：IP 只存哈希（品牌"诚实不套路"）
+// 保留哈希列兼容旧数据；明文 ip_address 列用于后台 IP 明细 + 打标签
 function hashIp(ip: string | null): string | null {
   if (!ip) return null;
   const salt = process.env.IP_HASH_SALT || "wuwei";
@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       lang: b.lang ?? null,
       platform: b.platform ?? null,
       ip_hash: hashIp(ip),
+      ip_address: ip,
       anon_id: b.anon_id ?? null,
       ua: req.headers.get("user-agent")?.slice(0, 400) ?? null,
       meta: b.meta ?? {},
