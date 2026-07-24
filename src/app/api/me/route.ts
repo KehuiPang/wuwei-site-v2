@@ -4,10 +4,13 @@ import { supabaseAdmin } from "@/lib/supabase";
 
 export const runtime = "nodejs";
 
-// 无为客户端「查我的账号 + 无为币余额」只读接口。
-// 客户端带 Authorization: Bearer <supabase access_token>。
+// 无为客户端「查我的账号 + 无为币余额 + 灰度 flags」只读接口。
+// 客户端带：
+//   Authorization: Bearer <supabase access_token>
+//   X-Device-Id: wd_<32hex>（客户端稳定机器指纹，可选）
 // 身份用 anon client + 用户 token 校验（RLS 生效，只能读自己）；
-// 余额用 service key 读并惰性开户（触发器没跑也能兜底：首查即建行 + 发注册礼包 100）。
+// 余额用 service key 读并惰性开户（触发器没跑也能兜底：首查即建行 + 发注册礼包 100）；
+// flags 按 feature_flag_rules 表判定：命中返 ["subscription"]，未命中返 []（默认全隐藏）。
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const SUPABASE_ANON = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
@@ -61,6 +64,34 @@ async function ensureBalance(userId: string): Promise<number> {
   return (after?.balance as number) ?? 0;
 }
 
+/** 查灰度规则表，返回当前请求命中的 flags */
+async function resolveFlags(
+  userId: string,
+  deviceId: string | null,
+  ip: string | null
+): Promise<string[]> {
+  try {
+    const sb = supabaseAdmin();
+    // 按优先级依次查：user_id > device_id > ip
+    // 任一维度命中即放开 subscription
+    const conditions: string[] = [];
+    const orParts: string[] = [`user_id.eq.${userId}`];
+    if (deviceId) orParts.push(`device_id.eq.${deviceId}`);
+    if (ip)       orParts.push(`ip.eq.${ip}`);
+
+    const { data } = await sb
+      .from("feature_flag_rules")
+      .select("flag")
+      .or(orParts.join(","))
+      .limit(10);
+
+    const flagSet = new Set((data ?? []).map((r: { flag: string }) => r.flag));
+    return flagSet.size > 0 ? [...flagSet] : [];
+  } catch {
+    return []; // 查询异常 → 安全态（全隐藏）
+  }
+}
+
 export async function GET(req: Request) {
   const token = req.headers
     .get("authorization")
@@ -69,6 +100,13 @@ export async function GET(req: Request) {
   if (!token) {
     return NextResponse.json({ error: "no_token" }, { status: 401 });
   }
+
+  // 读客户端上报的设备指纹 + 请求 IP（用于灰度判定）
+  const deviceId = (req as Request & { headers: Headers }).headers.get("x-device-id") || null;
+  const ip =
+    (req as Request & { headers: Headers }).headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    (req as Request & { headers: Headers }).headers.get("x-real-ip") ||
+    null;
 
   // 用匿名 key + 用户 token 校验身份（RLS 生效）
   const asUser = createClient(SUPABASE_URL, SUPABASE_ANON, {
@@ -83,11 +121,17 @@ export async function GET(req: Request) {
     return NextResponse.json({ error: "invalid_token" }, { status: 401 });
   }
 
+  // 并行查余额 + 灰度 flags
   let balance = 0;
+  let flags: string[] = [];
   try {
-    balance = await ensureBalance(user.id);
+    [balance, flags] = await Promise.all([
+      ensureBalance(user.id),
+      resolveFlags(user.id, deviceId, ip),
+    ]);
   } catch {
-    balance = 0; // 余额读取异常不阻断登录，先给 0，前端可稍后刷新
+    balance = 0;
+    flags = []; // 异常 → 安全态
   }
 
   return NextResponse.json({
@@ -101,5 +145,6 @@ export async function GET(req: Request) {
       avatar: (user.user_metadata?.avatar_url as string) ?? null,
     },
     coin: { balance },
+    flags,
   });
 }
