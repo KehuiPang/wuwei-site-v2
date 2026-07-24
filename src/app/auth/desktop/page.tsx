@@ -34,14 +34,15 @@ export default function DesktopRelayPage() {
         return;
       }
 
-      // token 走 fragment，不进 query、不进服务器日志
-      const frag = new URLSearchParams({
+      // token 走 query parameter（本机回环地址，风险可控）
+      // 注：fragment(#) 不会发送到服务器，本地 HTTP server 收不到
+      const params = new URLSearchParams({
         access_token: session.access_token,
         refresh_token: session.refresh_token,
         expires_at: String(session.expires_at ?? ""),
         state,
       }).toString();
-      window.location.href = `http://127.0.0.1:${port}/cb#${frag}`;
+      window.location.href = `http://127.0.0.1:${port}/cb?${params}`;
       setOk(true);
       setMsg("登录成功，请回到无为客户端。本页可关闭。");
     })();
