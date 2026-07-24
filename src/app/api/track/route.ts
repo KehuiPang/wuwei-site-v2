@@ -44,7 +44,6 @@ export async function POST(req: NextRequest) {
       country,
       lang: b.lang ?? null,
       platform: b.platform ?? null,
-      product: b.product ?? null,
       ip_hash: hashIp(ip),
       anon_id: b.anon_id ?? null,
       ua: req.headers.get("user-agent")?.slice(0, 400) ?? null,

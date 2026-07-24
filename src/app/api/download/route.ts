@@ -106,7 +106,6 @@ export async function GET(req: NextRequest) {
       event_type: "download",
       path: `/api/download?product=${product}&platform=${platform}`,
       platform,
-      product,
       country,
       ip_hash: hashIp(ip),
       ua: req.headers.get("user-agent")?.slice(0, 400) ?? null,
