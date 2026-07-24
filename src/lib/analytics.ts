@@ -507,3 +507,54 @@ export async function getDayLoginDetail(day: string): Promise<DayLoginDetail> {
     })),
   };
 }
+
+export type VisitorRow = {
+  ip_address: string | null;
+  ua: string | null;
+  country: string | null;
+  path: string | null;
+  anon_id: string | null;
+  created_at: string;
+  tag?: string | null; // 来自 ip_tags，join in memory
+  tag_note?: string | null;
+};
+
+/** 获取最近原始访问行（含 IP），用于明细面板 */
+export async function getRecentVisitors(
+  eventTypes: string[],
+  windowDays = 7,
+  limit = 100
+): Promise<VisitorRow[]> {
+  const sb = supabaseAdmin();
+  const since = new Date(Date.now() - windowDays * 86400_000).toISOString();
+
+  const [evRes, tagRes] = await Promise.all([
+    sb
+      .from("analytics_events")
+      .select("ip_address,ua,country,path,anon_id,created_at")
+      .in("event_type", eventTypes)
+      .gte("created_at", since)
+      .order("created_at", { ascending: false })
+      .limit(limit),
+    sb.from("ip_tags").select("ip_address,tag,note"),
+  ]);
+
+  const tagMap = new Map<string, { tag: string; note: string | null }>();
+  for (const t of tagRes.data ?? []) {
+    tagMap.set(t.ip_address, { tag: t.tag, note: t.note });
+  }
+
+  return (evRes.data ?? []).map((e) => {
+    const t = e.ip_address ? tagMap.get(e.ip_address) : undefined;
+    return {
+      ip_address: e.ip_address ?? null,
+      ua: e.ua ? String(e.ua).slice(0, 80) : null,
+      country: e.country ?? null,
+      path: e.path ?? null,
+      anon_id: e.anon_id ?? null,
+      created_at: String(e.created_at),
+      tag: t?.tag ?? null,
+      tag_note: t?.note ?? null,
+    };
+  });
+}

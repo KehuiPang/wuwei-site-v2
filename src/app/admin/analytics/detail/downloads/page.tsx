@@ -1,9 +1,10 @@
 import { notFound, redirect } from "next/navigation";
-import { getDownloadDetail } from "@/lib/analytics";
+import { getDownloadDetail, getRecentVisitors } from "@/lib/analytics";
 import { getAdmin } from "@/lib/supabase-server";
 import { AdminTopBar } from "../../components/AdminTopBar";
 import { DetailLayout, Panel, DistBar, Empty, DataTable } from "../../components/DetailLayout";
 import { SingleTrendChart } from "../../components/TrendCharts";
+import { IpVisitorTable } from "../../components/IpVisitorTable";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "下载详情 · 无为后台", robots: { index: false, follow: false } };
@@ -18,7 +19,10 @@ export default async function DownloadsDetailPage() {
     notFound();
   }
 
-  const data = await getDownloadDetail(30);
+  const [data, visitors] = await Promise.all([
+    getDownloadDetail(30),
+    getRecentVisitors(["download"], 7),
+  ]);
 
   return (
     <>
@@ -69,6 +73,11 @@ export default async function DownloadsDetailPage() {
               ])}
             />
           )}
+        </Panel>
+
+        {/* IP 访问明细 */}
+        <Panel title="🔍 最近访问 IP 明细（近7天，可打标签）">
+          <IpVisitorTable rows={visitors} />
         </Panel>
       </DetailLayout>
     </>
